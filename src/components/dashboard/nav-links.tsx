@@ -17,9 +17,10 @@ export const NAV_ITEMS = [
 
 interface NavLinksProps {
   onNavigate?: () => void;
+  variant?: 'sidebar' | 'header';
 }
 
-export function NavLinks({ onNavigate }: NavLinksProps) {
+export function NavLinks({ onNavigate, variant }: NavLinksProps) {
   const pathname = usePathname();
 
   return (
