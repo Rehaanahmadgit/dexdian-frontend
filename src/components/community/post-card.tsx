@@ -1,13 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/src/components/ui/avatar';
 import type { CommunityPost } from '@/src/lib/dummy-data';
 import { cn } from '@/src/lib/utils';
-
-// ─── Helpers ─────────────────────────────────────────────
 
 function getInitials(name: string) {
   return name
@@ -31,28 +28,15 @@ function formatTimestamp(iso: string): string {
   });
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: 'easeOut' as const },
-  },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
-};
-
-// ─── Component ───────────────────────────────────────────
-
 interface PostCardProps {
   post: CommunityPost;
   index?: number;
 }
 
-export function PostCard({ post, index = 0 }: PostCardProps) {
+export function PostCard({ post }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isSaved, setIsSaved] = useState(post.isSaved);
   const [likes, setLikes] = useState(post.likes);
-  const [likeBurst, setLikeBurst] = useState(false);
 
   const initials = getInitials(post.author.name);
 
@@ -60,138 +44,92 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
     const next = !isLiked;
     setIsLiked(next);
     setLikes((prev) => (next ? prev + 1 : prev - 1));
-    if (next) {
-      setLikeBurst(true);
-      setTimeout(() => setLikeBurst(false), 400);
-    }
   };
 
-  const handleSave = () => setIsSaved((p) => !p);
-
   return (
-    <motion.article
-      layout
-      variants={cardVariants}
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      whileHover={{ y: -2 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className="rounded-lg border border-border bg-card p-4 shadow-sm"
-      style={{ transitionDelay: `${Math.min(index, 6) * 20}ms` }}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
+    <article className="border-4 border-neo-ink bg-neo-white p-4 shadow-neo-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-neo-lg">
+      <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-2.5">
-          <Avatar className="w-10 h-10">
-            <AvatarFallback className="text-[12px] bg-accent text-primary font-semibold">
+          <Avatar className="h-11 w-11 rounded-none border-4 border-neo-ink">
+            <AvatarFallback className="rounded-none bg-neo-muted text-xs font-black">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[14px] font-semibold leading-tight text-foreground">
+            <p className="text-sm font-black uppercase tracking-tight">
               {post.author.name}
             </p>
-            <p className="text-[12px] text-muted-foreground mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wide">
               {post.author.role} · {formatTimestamp(post.timestamp)}
             </p>
           </div>
         </div>
         <button
           type="button"
-          className="p-1.5 rounded-md hover:bg-muted transition-colors"
+          className="border-2 border-neo-ink bg-neo-secondary p-1.5 transition-all duration-100 hover:bg-neo-accent"
         >
-          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+          <MoreHorizontal className="h-4 w-4 stroke-[3px]" />
         </button>
       </div>
 
-      {/* Content */}
-      <p className="text-[14px] leading-relaxed whitespace-pre-wrap mb-3 text-foreground">
+      <p className="mb-3 text-base font-bold leading-snug whitespace-pre-wrap">
         {post.content}
       </p>
 
-      {/* Image */}
       {post.image && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-3 -mx-4 sm:mx-0 rounded-none sm:rounded-md overflow-hidden bg-gradient-to-br from-accent to-[#E8F3FC] h-44 flex items-center justify-center"
-        >
-          <span className="text-4xl">📸</span>
-        </motion.div>
+        <div className="mb-3 flex h-40 items-center justify-center border-4 border-neo-ink bg-neo-muted neo-texture-halftone">
+          <span className="border-4 border-neo-ink bg-neo-secondary px-3 py-1 text-sm font-black uppercase shadow-neo-sm">
+            Photo
+          </span>
+        </div>
       )}
 
-      {/* Stats */}
-      <div className="flex items-center gap-1 mb-3 text-[12px] text-muted-foreground">
-        <motion.span
-          key={likes}
-          initial={{ scale: 1.15 }}
-          animate={{ scale: 1 }}
-          className="tabular-nums"
-        >
-          {likes} likes
-        </motion.span>
-        <span className="mx-1">·</span>
-        <span>{post.comments} comments</span>
-        <span className="mx-1">·</span>
-        <span>{post.shares} shares</span>
+      <div className="mb-3 text-xs font-black uppercase tracking-widest">
+        {likes} likes · {post.comments} comments · {post.shares} shares
       </div>
 
-      <div className="border-t border-border -mx-4" />
+      <div className="-mx-4 border-t-4 border-neo-ink" />
 
-      {/* Actions */}
-      <div className="flex items-center justify-between pt-2.5">
-        <motion.button
+      <div className="flex items-center justify-between pt-3">
+        <button
           type="button"
           onClick={handleLike}
-          whileTap={{ scale: 0.92 }}
           className={cn(
-            'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold transition-colors',
-            isLiked
-              ? 'text-[#C50F1F] bg-[#FDF3F4]'
-              : 'text-muted-foreground hover:text-[#C50F1F] hover:bg-[#FDF3F4]',
+            'flex items-center gap-1.5 border-2 border-neo-ink px-2.5 py-1.5 text-[11px] font-black uppercase',
+            'transition-all duration-100 ease-linear active:translate-x-[1px] active:translate-y-[1px]',
+            isLiked ? 'bg-neo-accent' : 'bg-neo-bg hover:bg-neo-accent',
           )}
         >
-          <motion.span
-            animate={likeBurst ? { scale: [1, 1.35, 1] } : { scale: 1 }}
-            transition={{ duration: 0.35 }}
-          >
-            <Heart className={cn('w-3.5 h-3.5', isLiked && 'fill-current')} />
-          </motion.span>
+          <Heart className={cn('h-3.5 w-3.5 stroke-[3px]', isLiked && 'fill-neo-ink')} />
           Like
-        </motion.button>
-
+        </button>
         <button
           type="button"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
+          className="flex items-center gap-1.5 border-2 border-neo-ink bg-neo-bg px-2.5 py-1.5 text-[11px] font-black uppercase transition-all duration-100 hover:bg-neo-secondary"
         >
-          <MessageCircle className="w-3.5 h-3.5" />
+          <MessageCircle className="h-3.5 w-3.5 stroke-[3px]" />
           Comment
         </button>
-
         <button
           type="button"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold text-muted-foreground hover:text-[#107C10] hover:bg-[#F1FAF1] transition-colors"
+          className="flex items-center gap-1.5 border-2 border-neo-ink bg-neo-bg px-2.5 py-1.5 text-[11px] font-black uppercase transition-all duration-100 hover:bg-neo-muted"
         >
-          <Share2 className="w-3.5 h-3.5" />
+          <Share2 className="h-3.5 w-3.5 stroke-[3px]" />
           Share
         </button>
-
-        <motion.button
+        <button
           type="button"
-          onClick={handleSave}
-          whileTap={{ scale: 0.92 }}
+          onClick={() => setIsSaved((p) => !p)}
           className={cn(
-            'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold transition-colors',
-            isSaved
-              ? 'text-[#8A3707] bg-[#FFF9F5]'
-              : 'text-muted-foreground hover:text-[#8A3707] hover:bg-[#FFF9F5]',
+            'flex items-center gap-1.5 border-2 border-neo-ink px-2.5 py-1.5 text-[11px] font-black uppercase',
+            'transition-all duration-100',
+            isSaved ? 'bg-neo-secondary' : 'bg-neo-bg hover:bg-neo-secondary',
           )}
         >
-          <Bookmark className={cn('w-3.5 h-3.5', isSaved && 'fill-current')} />
+          <Bookmark className={cn('h-3.5 w-3.5 stroke-[3px]', isSaved && 'fill-neo-ink')} />
           Save
-        </motion.button>
+        </button>
       </div>
-    </motion.article>
+    </article>
   );
 }

@@ -5,15 +5,11 @@ import { usePathname } from 'next/navigation';
 import { Home, Users, BarChart3 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 
-// ─── Nav Items ───────────────────────────────────────────
-
 export const NAV_ITEMS = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
 ] as const;
-
-// ─── Component ───────────────────────────────────────────
 
 interface NavLinksProps {
   onNavigate?: () => void;
@@ -35,17 +31,15 @@ export function NavLinks({ onNavigate }: NavLinksProps) {
             onClick={onNavigate}
             title={label}
             className={cn(
-              'relative flex items-center gap-2 px-3 py-2 rounded-md text-[14px] font-semibold transition-colors duration-150',
+              'flex items-center gap-1.5 border-4 px-2.5 py-1.5 text-xs font-black uppercase tracking-wide sm:px-3 sm:text-sm',
+              'transition-all duration-100 ease-linear',
               isActive
-                ? 'text-primary bg-accent'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'border-neo-ink bg-neo-secondary shadow-neo-sm -rotate-1'
+                : 'border-transparent hover:border-neo-ink hover:bg-neo-accent hover:shadow-neo-sm hover:rotate-1',
             )}
           >
-            <Icon className="w-[18px] h-[18px] flex-shrink-0" strokeWidth={isActive ? 2.25 : 2} />
+            <Icon className="h-4 w-4 shrink-0 stroke-[3px] sm:h-5 sm:w-5" />
             <span className="hidden sm:inline">{label}</span>
-            {isActive && (
-              <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-primary hidden sm:block" />
-            )}
           </Link>
         );
       })}

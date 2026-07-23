@@ -7,8 +7,7 @@ import { HomeworkCards } from '@/src/components/home/homework-cards';
 import { PeriodTimetable } from '@/src/components/home/period-timetable';
 import { useAuthStore } from '@/src/stores/auth-store';
 import { HERO_STATS } from '@/src/lib/dummy-data';
-
-// ─── Helpers ─────────────────────────────────────────────
+import { cn } from '@/src/lib/utils';
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -32,88 +31,92 @@ const QUICK_STATS = [
     value: `${HERO_STATS.attendance.value}%`,
     hint: HERO_STATS.attendance.change,
     icon: CalendarCheck,
-    accent: 'text-primary bg-accent',
+    bg: 'bg-neo-accent',
+    rotate: 'rotate-1',
   },
   {
-    label: 'Current Grade',
+    label: 'Grade',
     value: HERO_STATS.grade.value,
     hint: HERO_STATS.grade.change,
     icon: GraduationCap,
-    accent: 'text-[#107C10] bg-[#F1FAF1]',
+    bg: 'bg-neo-secondary',
+    rotate: '-rotate-1',
   },
   {
-    label: 'Pending Work',
+    label: 'Pending',
     value: String(HERO_STATS.pendingHomework.value),
     hint: HERO_STATS.pendingHomework.change,
     icon: BookOpen,
-    accent: 'text-[#8A3707] bg-[#FFF9F5]',
+    bg: 'bg-neo-muted',
+    rotate: 'rotate-2',
   },
   {
-    label: 'Upcoming Exams',
+    label: 'Exams',
     value: String(HERO_STATS.upcomingExams.value),
     hint: HERO_STATS.upcomingExams.change,
     icon: ClipboardList,
-    accent: 'text-[#115EA3] bg-[#E8F3FC]',
+    bg: 'bg-neo-white',
+    rotate: '-rotate-2',
   },
 ] as const;
-
-// ─── Home Page ───────────────────────────────────────────
 
 export default function HomePage() {
   const { user } = useAuthStore();
   const firstName = user?.name?.split(' ')[0] || 'Student';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-5 md:px-8 md:py-7 space-y-5">
-      {/* ── Header ──────────────────────────────────── */}
-      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 pb-4 border-b border-border">
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-8 md:py-10">
+      <header className="flex flex-col gap-4 border-b-4 border-neo-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-[12px] font-semibold tracking-[0.14em] uppercase text-primary mb-1">
-            Student Dashboard
+          <p className="mb-2 inline-block -rotate-1 border-4 border-neo-ink bg-neo-secondary px-2 py-0.5 text-xs font-black uppercase tracking-[0.2em] shadow-neo-sm">
+            Dashboard
           </p>
-          <h1 className="text-[1.75rem] md:text-[2rem] font-semibold tracking-tight text-foreground leading-none">
-            {getGreeting()}, {firstName}
+          <h1 className="text-4xl font-black uppercase leading-none tracking-tighter neo-text-shadow sm:text-5xl md:text-6xl">
+            {getGreeting()},
+            <span className="mt-2 block rotate-1 border-4 border-neo-ink bg-neo-accent px-2 py-1 text-3xl shadow-neo-md sm:inline-block sm:ml-3 sm:mt-0 sm:text-4xl md:text-5xl">
+              {firstName}
+            </span>
           </h1>
         </div>
-        <p className="text-[14px] text-muted-foreground sm:text-right">
+        <p className="border-4 border-neo-ink bg-neo-white px-3 py-2 text-sm font-black uppercase tracking-wide shadow-neo-sm">
           {formatDate()}
         </p>
       </header>
 
-      {/* ── Quick stats ─────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {QUICK_STATS.map(({ label, value, hint, icon: Icon, accent }) => (
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {QUICK_STATS.map(({ label, value, hint, icon: Icon, bg, rotate }) => (
           <div
             key={label}
-            className="rounded-lg border border-border bg-card px-4 py-3.5 shadow-sm flex items-center gap-3"
+            className={cn(
+              'flex items-center gap-3 border-4 border-neo-ink bg-neo-white p-3 shadow-neo-sm',
+              'transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-neo-md',
+              rotate,
+            )}
           >
             <div
-              className={`flex items-center justify-center w-10 h-10 rounded-md shrink-0 ${accent}`}
+              className={cn(
+                'flex h-12 w-12 shrink-0 items-center justify-center border-4 border-neo-ink',
+                bg,
+              )}
             >
-              <Icon className="w-[18px] h-[18px]" strokeWidth={2} />
+              <Icon className="h-6 w-6 stroke-[3px]" />
             </div>
             <div className="min-w-0">
-              <p className="text-[12px] font-medium text-muted-foreground truncate">
+              <p className="text-[10px] font-black uppercase tracking-widest">
                 {label}
               </p>
-              <p className="text-[1.25rem] font-semibold text-foreground tabular-nums leading-tight">
-                {value}
-              </p>
-              <p className="text-[11px] text-muted-foreground truncate mt-0.5">
-                {hint}
-              </p>
+              <p className="text-2xl font-black tabular-nums leading-none">{value}</p>
+              <p className="truncate text-[11px] font-bold">{hint}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* ── Main panels: equal height, balanced split ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:h-[560px]">
-        <div className="lg:col-span-7 min-h-[420px] lg:min-h-0 h-full">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:h-[560px]">
+        <div className="min-h-[420px] h-full lg:col-span-7 lg:min-h-0">
           <AttendanceCalendar />
         </div>
-
-        <div className="lg:col-span-5 grid grid-rows-2 gap-4 min-h-[480px] lg:min-h-0 h-full">
+        <div className="grid h-full min-h-[480px] grid-rows-2 gap-6 lg:col-span-5 lg:min-h-0">
           <div className="min-h-0 overflow-hidden">
             <HomeworkCards />
           </div>
@@ -123,7 +126,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Timetable ───────────────────────────────── */}
       <PeriodTimetable />
     </div>
   );

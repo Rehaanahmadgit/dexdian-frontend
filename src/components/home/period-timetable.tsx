@@ -8,29 +8,16 @@ import { cn } from '@/src/lib/utils';
 // ─── Subject color map ───────────────────────────────────
 
 const SUBJECT_COLORS: Record<string, string> = {
-  Mathematics: 'bg-[#E8F3FC] border-[#B4D6F2]',
-  Science: 'bg-[#F1FAF1] border-[#9FD89F]',
-  English: 'bg-[#FFF9F5] border-[#F5D0B5]',
-  History: 'bg-[#FDF3F4] border-[#F1B6BC]',
-  'Computer Science': 'bg-[#EEF0FB] border-[#C5CAE8]',
-  'Physical Education': 'bg-[#E8F7F7] border-[#9FD6D6]',
-  'Art & Craft': 'bg-[#FDF3F4] border-[#F1B6BC]',
-  Music: 'bg-[#FFF9F5] border-[#F5D0B5]',
-  Library: 'bg-muted border-border',
-  'Club Activity': 'bg-[#E8F7F7] border-[#9FD6D6]',
-};
-
-const SUBJECT_TEXT: Record<string, string> = {
-  Mathematics: 'text-[#0C3B5E]',
-  Science: 'text-[#0E700E]',
-  English: 'text-[#8A3707]',
-  History: 'text-[#C50F1F]',
-  'Computer Science': 'text-[#115EA3]',
-  'Physical Education': 'text-[#038387]',
-  'Art & Craft': 'text-[#C50F1F]',
-  Music: 'text-[#8A3707]',
-  Library: 'text-foreground',
-  'Club Activity': 'text-[#038387]',
+  Mathematics: 'bg-neo-muted',
+  Science: 'bg-neo-secondary',
+  English: 'bg-neo-secondary',
+  History: 'bg-neo-accent',
+  'Computer Science': 'bg-neo-muted',
+  'Physical Education': 'bg-neo-white',
+  'Art & Craft': 'bg-neo-accent',
+  Music: 'bg-neo-secondary',
+  Library: 'bg-neo-bg',
+  'Club Activity': 'bg-neo-white',
 };
 
 // ─── Component ───────────────────────────────────────────
@@ -39,26 +26,27 @@ export function PeriodTimetable() {
   // Transpose: periods → rows, days → columns
   const dayLabels = TIMETABLE.map((d) => d.day.slice(0, 3)); // Mon, Tue, ...
   const periods = TIMETABLE[0].periods;
+  const todayColIdx = new Date().getDay() - 1;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.45, duration: 0.4, ease: 'easeOut' as const }}
-      className="rounded-lg border border-border bg-card overflow-hidden shadow-sm"
+      transition={{ delay: 0.45, duration: 0.2, ease: 'linear' }}
+      className="overflow-hidden rounded-none border-4 border-neo-ink bg-neo-white font-neo shadow-neo-md"
     >
       {/* ── Header ──────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+      <div className="flex items-center justify-between border-b-4 border-neo-ink bg-neo-secondary px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <h3 className="text-[15px] font-semibold tracking-tight text-foreground">
+          <h3 className="text-sm font-black uppercase tracking-wide text-neo-ink">
             Class Timetable
           </h3>
-          <span className="hidden sm:inline text-[12px] text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
+          <span className="hidden border-2 border-neo-ink bg-neo-white px-2 py-0.5 text-[11px] font-black uppercase sm:inline">
             Mon–Sat · 8:00 AM – 12:30 PM
           </span>
         </div>
-        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
-          <Clock className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase text-neo-ink">
+          <Clock className="h-3.5 w-3.5 stroke-[3px]" />
           <span className="hidden sm:inline">6 periods daily</span>
         </div>
       </div>
@@ -68,23 +56,29 @@ export function PeriodTimetable() {
         <table className="w-full min-w-[700px] border-collapse">
           {/* Column headers: empty + day names */}
           <thead>
-            <tr className="border-b border-border/60">
-              <th className="sticky left-0 bg-card z-10 w-[100px] md:w-[120px] py-3 px-3 text-left text-[13px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <tr className="border-b-4 border-neo-ink">
+              <th className="sticky left-0 z-10 w-[100px] border-r-2 border-neo-ink bg-neo-white py-3 px-3 text-left text-[11px] font-black uppercase tracking-wider text-neo-ink md:w-[120px]">
                 Period
               </th>
-              {dayLabels.map((day, i) => (
-                <th
-                  key={day}
-                  className={cn(
-                    'py-3 px-2 text-center text-[13px] font-semibold uppercase tracking-wider min-w-[90px] md:min-w-[110px]',
-                    i === new Date().getDay() - 1
-                      ? 'text-primary bg-primary/5'
-                      : 'text-muted-foreground',
-                  )}
-                >
-                  {day}
-                </th>
-              ))}
+              {dayLabels.map((day, i) => {
+                const isToday = todayColIdx === i;
+                return (
+                  <th
+                    key={day}
+                    className={cn(
+                      'min-w-[90px] py-3 px-2 text-center text-[11px] font-black uppercase tracking-wider md:min-w-[110px]',
+                      isToday
+                        ? 'border-x-2 border-neo-ink bg-neo-secondary text-neo-ink'
+                        : 'text-neo-ink',
+                    )}
+                  >
+                    {day}
+                    {isToday && (
+                      <span className="mt-0.5 block text-[9px] font-black">Today</span>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
 
@@ -94,13 +88,10 @@ export function PeriodTimetable() {
 
               if (isBreak) {
                 return (
-                  <tr key={pIdx} className="border-b border-border/30">
-                    <td
-                      colSpan={7}
-                      className="py-2.5 px-4 text-center"
-                    >
-                      <span className="inline-flex items-center gap-2 px-4 py-1 rounded-md bg-muted/60 text-[13px] font-medium text-muted-foreground">
-                        <Clock className="w-3.5 h-3.5" />
+                  <tr key={pIdx} className="border-b-2 border-neo-ink">
+                    <td colSpan={7} className="py-2.5 px-4 text-center">
+                      <span className="inline-flex items-center gap-2 border-2 border-neo-ink bg-neo-bg px-4 py-1 text-[12px] font-black uppercase text-neo-ink">
+                        <Clock className="h-3.5 w-3.5 stroke-[3px]" />
                         Break · {template.time}
                       </span>
                     </td>
@@ -109,14 +100,14 @@ export function PeriodTimetable() {
               }
 
               return (
-                <tr key={pIdx} className="border-b border-border/30 last:border-b-0">
+                <tr key={pIdx} className="border-b-2 border-neo-ink last:border-b-0">
                   {/* Period # and time */}
-                  <td className="sticky left-0 bg-card z-10 py-3 px-3 border-r border-border/30">
+                  <td className="sticky left-0 z-10 border-r-2 border-neo-ink bg-neo-white py-3 px-3">
                     <div className="flex flex-col">
-                      <span className="text-[13px] font-bold text-muted-foreground">
+                      <span className="text-[13px] font-black text-neo-ink">
                         {pIdx + 1}
                       </span>
-                      <span className="text-[12px] text-muted-foreground/70 font-mono tabular-nums leading-tight mt-0.5">
+                      <span className="mt-0.5 font-mono text-[11px] font-bold tabular-nums leading-tight text-neo-ink">
                         {template.time.split(' - ')[0]}
                       </span>
                     </div>
@@ -125,37 +116,30 @@ export function PeriodTimetable() {
                   {/* Day cells */}
                   {TIMETABLE.map((day, dIdx) => {
                     const period = day.periods[pIdx];
-                    const isToday =
-                      new Date().getDay() - 1 === dIdx;
-                    const colorBg = SUBJECT_COLORS[period.subject] || '';
-                    const colorText = SUBJECT_TEXT[period.subject] || '';
+                    const isToday = todayColIdx === dIdx;
+                    const colorBg = SUBJECT_COLORS[period.subject] || 'bg-neo-bg';
 
                     return (
                       <td
                         key={day.day}
                         className={cn(
-                          'py-2.5 px-2 md:px-3 align-top transition-colors',
-                          isToday && 'bg-primary/[0.03]',
+                          'px-2 py-2.5 align-top transition-colors duration-100 ease-linear md:px-3',
+                          isToday && 'border-x-2 border-neo-ink bg-neo-secondary',
                         )}
                       >
                         <div
                           className={cn(
-                            'rounded-lg border px-2.5 py-2 h-full',
-                            colorBg || 'bg-muted/20 border-border/20',
+                            'h-full rounded-none border-2 border-neo-ink px-2.5 py-2 shadow-neo-sm',
+                            colorBg,
                           )}
                         >
-                          <p
-                            className={cn(
-                              'text-sm md:text-[15px] font-semibold leading-snug',
-                              colorText || 'text-foreground',
-                            )}
-                          >
+                          <p className="text-sm font-black uppercase leading-snug text-neo-ink md:text-[14px]">
                             {period.subject}
                           </p>
-                          <p className="text-[12px] md:text-[13px] text-muted-foreground mt-0.5 leading-tight">
+                          <p className="mt-0.5 text-[11px] font-bold leading-tight text-neo-ink md:text-[12px]">
                             {period.teacher}
                           </p>
-                          <p className="text-[12px] text-muted-foreground/70 leading-tight">
+                          <p className="text-[11px] font-bold leading-tight text-neo-ink">
                             {period.room}
                           </p>
                         </div>

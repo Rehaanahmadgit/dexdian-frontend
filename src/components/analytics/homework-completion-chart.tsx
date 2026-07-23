@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import {
   PieChart,
   Pie,
@@ -24,14 +23,14 @@ function CustomTooltip({
   if (!active || !payload?.[0]) return null;
   const { name, value, payload: data } = payload[0];
   return (
-    <div className="rounded-md border border-border bg-popover px-3 py-2 shadow-lg text-[12px]">
+    <div className="rounded-none border-4 border-neo-ink bg-neo-white px-3 py-2 shadow-neo-sm text-xs font-bold">
       <div className="flex items-center gap-2">
         <span
-          className="w-2 h-2 rounded-full"
+          className="h-2.5 w-2.5 border border-neo-ink"
           style={{ backgroundColor: data.fill }}
         />
-        <span className="font-semibold text-foreground">{name}</span>
-        <span className="tabular-nums text-muted-foreground ml-1">{value}</span>
+        <span className="font-black uppercase">{name}</span>
+        <span className="ml-1 tabular-nums">{value}</span>
       </div>
     </div>
   );
@@ -47,10 +46,10 @@ export function HomeworkCompletionChart() {
       title="Homework Overview"
       subtitle={`${total} assignments this semester`}
       icon={ClipboardCheck}
-      delay={0.18}
+      headerBg="bg-neo-accent"
     >
-      <div className="flex flex-col h-full">
-        <div className="relative flex-1 min-h-[200px]">
+      <div className="flex h-full flex-col">
+        <div className="relative min-h-[200px] flex-1">
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
@@ -62,7 +61,9 @@ export function HomeworkCompletionChart() {
                 paddingAngle={3}
                 dataKey="count"
                 nameKey="status"
-                animationDuration={1100}
+                stroke="#000000"
+                strokeWidth={2}
+                animationDuration={800}
                 animationEasing="ease-out"
               >
                 {HOMEWORK_COMPLETION.map((entry) => (
@@ -73,38 +74,34 @@ export function HomeworkCompletionChart() {
             </PieChart>
           </ResponsiveContainer>
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-[1.5rem] font-semibold text-foreground tabular-nums leading-none">
+            <span className="text-2xl font-black tabular-nums leading-none">
               {total}
             </span>
-            <span className="text-[11px] text-muted-foreground mt-1">Total</span>
+            <span className="mt-1 text-[10px] font-black uppercase tracking-widest">
+              Total
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          {HOMEWORK_COMPLETION.map((item, i) => (
-            <motion.div
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {HOMEWORK_COMPLETION.map((item) => (
+            <div
               key={item.status}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 + i * 0.06 }}
-              className="flex items-center gap-2 rounded-md bg-muted/50 px-2.5 py-2"
+              className="flex items-center gap-2 border-2 border-neo-ink bg-neo-bg px-2.5 py-2"
             >
               <span
-                className="w-2 h-2 rounded-full shrink-0"
+                className="h-3 w-3 shrink-0 border border-neo-ink"
                 style={{ backgroundColor: item.fill }}
               />
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] text-muted-foreground truncate">
+                <p className="truncate text-[10px] font-black uppercase tracking-widest">
                   {item.status}
                 </p>
-                <p
-                  className="text-[15px] font-semibold tabular-nums leading-tight"
-                  style={{ color: item.fill }}
-                >
+                <p className="text-base font-black tabular-nums leading-tight">
                   {item.count}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

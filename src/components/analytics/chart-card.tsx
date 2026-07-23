@@ -1,11 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-
-// ─── Props ───────────────────────────────────────────────
 
 interface ChartCardProps {
   title: string;
@@ -16,9 +13,8 @@ interface ChartCardProps {
   bodyClassName?: string;
   delay?: number;
   action?: ReactNode;
+  headerBg?: string;
 }
-
-// ─── Component ───────────────────────────────────────────
 
 export function ChartCard({
   title,
@@ -27,41 +23,41 @@ export function ChartCard({
   children,
   className,
   bodyClassName,
-  delay = 0,
   action,
+  headerBg = 'bg-neo-secondary',
 }: ChartCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4, ease: 'easeOut' as const }}
-      whileHover={{ y: -2 }}
+    <div
       className={cn(
-        'rounded-lg border border-border bg-card shadow-sm overflow-hidden flex flex-col h-full',
+        'flex h-full flex-col overflow-hidden border-4 border-neo-ink bg-neo-white shadow-neo-md',
+        'transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-neo-lg',
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-3 px-4 py-3 border-b border-border shrink-0">
-        <div className="flex items-start gap-2.5 min-w-0">
+      <div
+        className={cn(
+          'flex shrink-0 items-start justify-between gap-3 border-b-4 border-neo-ink px-4 py-3',
+          headerBg,
+        )}
+      >
+        <div className="flex min-w-0 items-start gap-2.5">
           {Icon && (
-            <div className="mt-0.5 flex items-center justify-center w-8 h-8 rounded-md bg-accent text-primary shrink-0">
-              <Icon className="w-4 h-4" />
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border-4 border-neo-ink bg-neo-white">
+              <Icon className="h-4 w-4 stroke-[3px]" />
             </div>
           )}
           <div className="min-w-0">
-            <h3 className="text-[15px] font-semibold text-foreground tracking-tight">
+            <h3 className="text-sm font-black uppercase tracking-wide">
               {title}
             </h3>
             {subtitle && (
-              <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
-                {subtitle}
-              </p>
+              <p className="mt-0.5 text-xs font-bold leading-snug">{subtitle}</p>
             )}
           </div>
         </div>
         {action}
       </div>
-      <div className={cn('flex-1 min-h-0 p-4', bodyClassName)}>{children}</div>
-    </motion.div>
+      <div className={cn('min-h-0 flex-1 p-4', bodyClassName)}>{children}</div>
+    </div>
   );
 }

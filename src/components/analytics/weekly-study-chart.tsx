@@ -27,16 +27,16 @@ function CustomTooltip({
 }) {
   if (!active || !payload) return null;
   return (
-    <div className="rounded-md border border-border bg-popover px-3 py-2 shadow-lg text-[12px]">
-      <p className="font-semibold mb-1.5 text-foreground">{label}</p>
+    <div className="rounded-none border-4 border-neo-ink bg-neo-white px-3 py-2 text-xs font-bold shadow-neo-sm">
+      <p className="mb-1.5 font-black uppercase">{label}</p>
       {payload.map((entry, i) => (
         <div key={i} className="flex items-center gap-2 py-0.5">
           <span
-            className="w-2 h-2 rounded-full shrink-0"
+            className="h-2.5 w-2.5 shrink-0 border border-neo-ink"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-muted-foreground">{entry.name}</span>
-          <span className="font-semibold tabular-nums ml-auto">{entry.value}h</span>
+          <span>{entry.name}</span>
+          <span className="ml-auto font-black tabular-nums">{entry.value}h</span>
         </div>
       ))}
     </div>
@@ -51,7 +51,7 @@ export function WeeklyStudyHoursChart() {
       title="Weekly Study Hours"
       subtitle="Daily study time vs daily target"
       icon={Clock}
-      delay={0.26}
+      headerBg="bg-neo-muted"
     >
       <ResponsiveContainer width="100%" height={260}>
         <AreaChart
@@ -60,26 +60,26 @@ export function WeeklyStudyHoursChart() {
         >
           <defs>
             <linearGradient id="studyGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#0F6CBD" stopOpacity={0.28} />
-              <stop offset="95%" stopColor="#0F6CBD" stopOpacity={0} />
+              <stop offset="5%" stopColor="#FF6B6B" stopOpacity={0.45} />
+              <stop offset="95%" stopColor="#FF6B6B" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#000000" vertical={false} />
           <XAxis
             dataKey="day"
-            tick={{ fontSize: 12, fill: '#616161' }}
+            tick={{ fontSize: 12, fill: '#000000', fontWeight: 700 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#616161' }}
+            tick={{ fontSize: 12, fill: '#000000', fontWeight: 700 }}
             axisLine={false}
             tickLine={false}
             unit="h"
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }}
+            wrapperStyle={{ fontSize: '12px', paddingTop: '8px', fontWeight: 700 }}
             iconType="circle"
             iconSize={8}
           />
@@ -87,17 +87,17 @@ export function WeeklyStudyHoursChart() {
             type="monotone"
             dataKey="hours"
             name="Study Hours"
-            stroke="#0F6CBD"
+            stroke="#000000"
             strokeWidth={2.25}
             fill="url(#studyGradient)"
-            animationDuration={1100}
+            animationDuration={800}
             animationEasing="ease-out"
           />
           <Area
             type="monotone"
             dataKey="target"
             name="Target"
-            stroke="#8A3707"
+            stroke="#FFD93D"
             strokeWidth={1.5}
             strokeDasharray="5 5"
             fill="none"

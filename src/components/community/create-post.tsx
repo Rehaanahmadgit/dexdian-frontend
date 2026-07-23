@@ -1,13 +1,10 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Image, Send, X, Smile } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/src/components/ui/avatar';
 import { STUDENT } from '@/src/lib/dummy-data';
 import { cn } from '@/src/lib/utils';
-
-// ─── Component ───────────────────────────────────────────
 
 export function CreatePost() {
   const [content, setContent] = useState('');
@@ -28,102 +25,86 @@ export function CreatePost() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-      whileHover={{ y: -1 }}
-      className="rounded-lg border border-border bg-card p-4 shadow-sm"
-    >
+    <div className="border-4 border-neo-ink bg-neo-white p-4 shadow-neo-md transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-neo-lg">
       <form onSubmit={handleSubmit}>
         <div className="flex gap-3">
-          <Avatar className="w-10 h-10 flex-shrink-0">
-            <AvatarFallback className="text-[12px] bg-accent text-primary font-semibold">
+          <Avatar className="h-11 w-11 shrink-0 rounded-none border-4 border-neo-ink">
+            <AvatarFallback className="rounded-none bg-neo-accent text-xs font-black">
               {initials}
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               onFocus={() => setIsExpanded(true)}
-              placeholder="Share an update with your class…"
+              placeholder="Share something LOUD with your class…"
               rows={isExpanded ? 3 : 1}
               maxLength={maxChars}
               className={cn(
-                'w-full resize-none rounded-md border border-border bg-background px-3 py-2.5 text-[14px] text-foreground',
-                'placeholder:text-muted-foreground/70',
-                'focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary',
-                'transition-all duration-200',
+                'w-full resize-none border-4 border-neo-ink bg-neo-bg px-3 py-2.5',
+                'rounded-none text-base font-bold text-neo-ink',
+                'placeholder:text-neo-ink/40',
+                'transition-colors duration-100 ease-out',
+                'focus-visible:bg-neo-secondary focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-neo-sm',
               )}
             />
 
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-border">
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                      >
-                        <Image className="w-3.5 h-3.5" />
-                        Photo
-                      </button>
-                      <button
-                        type="button"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                      >
-                        <Smile className="w-3.5 h-3.5" />
-                        Feeling
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12px] text-muted-foreground tabular-nums">
-                        {content.length}/{maxChars}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsExpanded(false);
-                          setContent('');
-                        }}
-                        className="flex items-center gap-0.5 px-2.5 py-1.5 rounded-md text-[12px] font-medium text-muted-foreground hover:bg-muted transition-colors"
-                      >
-                        <X className="w-3 h-3" />
-                        Cancel
-                      </button>
-                      <motion.button
-                        type="submit"
-                        disabled={!content.trim()}
-                        whileHover={content.trim() ? { scale: 1.03 } : undefined}
-                        whileTap={content.trim() ? { scale: 0.97 } : undefined}
-                        className={cn(
-                          'flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-[12px] font-semibold transition-colors',
-                          content.trim()
-                            ? 'bg-primary text-primary-foreground hover:bg-[#115EA3]'
-                            : 'bg-muted text-muted-foreground cursor-not-allowed',
-                        )}
-                      >
-                        <Send className="w-3 h-3" />
-                        Post
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {isExpanded && (
+              <div className="mt-2.5 flex items-center justify-between border-t-4 border-neo-ink pt-2.5">
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 border-2 border-neo-ink bg-neo-muted px-2 py-1 text-[11px] font-black uppercase transition-all duration-100 hover:bg-neo-accent"
+                  >
+                    <Image className="h-3.5 w-3.5 stroke-[3px]" />
+                    Photo
+                  </button>
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 border-2 border-neo-ink bg-neo-secondary px-2 py-1 text-[11px] font-black uppercase transition-all duration-100 hover:bg-neo-accent"
+                  >
+                    <Smile className="h-3.5 w-3.5 stroke-[3px]" />
+                    Feeling
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-black tabular-nums">
+                    {content.length}/{maxChars}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsExpanded(false);
+                      setContent('');
+                    }}
+                    className="flex items-center gap-0.5 border-2 border-neo-ink bg-neo-white px-2 py-1 text-[11px] font-black uppercase"
+                  >
+                    <X className="h-3 w-3 stroke-[3px]" />
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!content.trim()}
+                    className={cn(
+                      'flex items-center gap-1 border-4 border-neo-ink px-3 py-1 text-[11px] font-black uppercase shadow-neo-sm',
+                      'transition-all duration-100 ease-linear',
+                      'active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+                      content.trim()
+                        ? 'bg-neo-accent hover:bg-[#ff5252]'
+                        : 'cursor-not-allowed bg-neo-bg opacity-50',
+                    )}
+                  >
+                    <Send className="h-3 w-3 stroke-[3px]" />
+                    Post
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </form>
-    </motion.div>
+    </div>
   );
 }

@@ -1,12 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Users, MessageCircle, Bell, UserPlus, Send } from 'lucide-react';
 import { FRIENDS, NOTIFICATIONS, SUGGESTED_FRIENDS } from '@/src/lib/dummy-data';
 import { Avatar, AvatarFallback } from '@/src/components/ui/avatar';
 import { cn } from '@/src/lib/utils';
-
-// ─── Helpers ─────────────────────────────────────────────
 
 function getInitials(name: string) {
   return name
@@ -28,233 +25,172 @@ function timeAgo(iso: string): string {
 }
 
 const MESSAGE_PREVIEWS = [
-  'Hey, did you finish the lab report?',
-  'Can we revise chapter 5 together?',
-  'Thanks for sharing those notes!',
-  'See you at practice later.',
-  'The assignment deadline is tomorrow.',
-  'Congrats on the quiz score!',
-  'Are you free after school?',
+  'Hey, did you finish the lab?',
+  'Revise chapter 5 together?',
+  'Thanks for the notes!',
+  'See you at practice.',
+  'Deadline is tomorrow.',
 ];
 
 const NOTIF_ICONS: Record<
   string,
-  { icon: React.ComponentType<{ className?: string }>; color: string }
+  { icon: React.ComponentType<{ className?: string }>; bg: string }
 > = {
-  like: { icon: Users, color: 'text-[#C50F1F] bg-[#FDF3F4]' },
-  comment: { icon: MessageCircle, color: 'text-primary bg-accent' },
-  follow: { icon: UserPlus, color: 'text-[#107C10] bg-[#F1FAF1]' },
-  mention: { icon: Bell, color: 'text-[#115EA3] bg-accent' },
-  share: { icon: Users, color: 'text-[#8A3707] bg-[#FFF9F5]' },
+  like: { icon: Users, bg: 'bg-neo-accent' },
+  comment: { icon: MessageCircle, bg: 'bg-neo-secondary' },
+  follow: { icon: UserPlus, bg: 'bg-neo-muted' },
+  mention: { icon: Bell, bg: 'bg-neo-white' },
+  share: { icon: Users, bg: 'bg-neo-secondary' },
 };
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, x: 14, y: 6 },
-  show: {
-    opacity: 1,
-    x: 0,
-    y: 0,
-    transition: { duration: 0.35, ease: 'easeOut' as const },
-  },
-};
-
-// ─── Component ───────────────────────────────────────────
 
 export function CommunityRightSidebar() {
   const onlineCount = FRIENDS.filter((f) => f.isOnline).length;
   const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
 
   return (
-    <motion.aside
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="space-y-4 max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain pr-0.5"
-    >
+    <aside className="max-h-[calc(100vh-6rem)] space-y-4 overflow-y-auto overscroll-contain">
       {/* Messages */}
-      <motion.div
-        variants={item}
-        className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
-      >
-        <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-border">
+      <div className="overflow-hidden border-4 border-neo-ink bg-neo-white shadow-neo-md">
+        <div className="flex items-center justify-between border-b-4 border-neo-ink bg-neo-accent px-3.5 py-2.5">
           <div className="flex items-center gap-2">
-            <MessageCircle className="w-4 h-4 text-primary" />
-            <h3 className="text-[14px] font-semibold text-foreground">Messages</h3>
+            <MessageCircle className="h-4 w-4 stroke-[3px]" />
+            <h3 className="text-xs font-black uppercase tracking-widest">
+              Messages
+            </h3>
           </div>
-          <span className="text-[12px] font-medium text-[#107C10]">
+          <span className="border-2 border-neo-ink bg-neo-white px-1.5 text-[10px] font-black uppercase">
             {onlineCount} online
           </span>
         </div>
-
-        <div className="p-1.5 max-h-[220px] overflow-y-auto">
+        <div className="max-h-[200px] space-y-0 overflow-y-auto p-1.5">
           {FRIENDS.slice(0, 5).map((friend, i) => (
-            <motion.button
+            <button
               key={friend.id}
               type="button"
-              initial={{ opacity: 0, x: 8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.04 }}
-              whileHover={{ backgroundColor: 'var(--muted)' }}
-              className="w-full flex items-center gap-2.5 p-2 rounded-md text-left transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2.5 border-2 border-transparent p-2 text-left transition-all duration-100 ease-linear hover:border-neo-ink hover:bg-neo-secondary"
             >
               <div className="relative shrink-0">
-                <Avatar className="w-9 h-9">
-                  <AvatarFallback className="text-[10px] bg-accent text-primary font-semibold">
+                <Avatar className="h-9 w-9 rounded-none border-2 border-neo-ink">
+                  <AvatarFallback className="rounded-none bg-neo-muted text-[10px] font-black">
                     {getInitials(friend.name)}
                   </AvatarFallback>
                 </Avatar>
                 <span
                   className={cn(
-                    'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-card',
-                    friend.isOnline ? 'bg-[#107C10]' : 'bg-muted-foreground/35',
+                    'absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 border-2 border-neo-ink',
+                    friend.isOnline ? 'bg-neo-secondary' : 'bg-neo-bg',
                   )}
-                >
-                  {friend.isOnline && (
-                    <span className="absolute inset-0 rounded-full bg-[#107C10] animate-ping opacity-40" />
-                  )}
-                </span>
+                />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[13px] font-semibold truncate text-foreground">
-                    {friend.name}
-                  </p>
-                  <span className="text-[10px] text-muted-foreground shrink-0">
-                    {friend.isOnline ? 'now' : friend.lastSeen ?? ''}
-                  </span>
-                </div>
-                <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-black uppercase">
+                  {friend.name}
+                </p>
+                <p className="truncate text-[11px] font-bold">
                   {MESSAGE_PREVIEWS[i % MESSAGE_PREVIEWS.length]}
                 </p>
               </div>
-            </motion.button>
+            </button>
           ))}
         </div>
-
-        <div className="px-3.5 py-2 border-t border-border">
+        <div className="border-t-4 border-neo-ink p-2">
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-1.5 h-8 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-[#115EA3] transition-colors"
+            className="flex h-10 w-full items-center justify-center gap-1.5 border-4 border-neo-ink bg-neo-secondary text-xs font-black uppercase tracking-wide shadow-neo-sm transition-all duration-100 ease-linear active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
           >
-            <Send className="w-3.5 h-3.5" />
+            <Send className="h-3.5 w-3.5 stroke-[3px]" />
             New message
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Notifications */}
-      <motion.div
-        variants={item}
-        className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
-      >
-        <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-border">
+      <div className="overflow-hidden border-4 border-neo-ink bg-neo-white shadow-neo-md">
+        <div className="flex items-center justify-between border-b-4 border-neo-ink bg-neo-secondary px-3.5 py-2.5">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-primary" />
-            <h3 className="text-[14px] font-semibold text-foreground">
+            <Bell className="h-4 w-4 stroke-[3px]" />
+            <h3 className="text-xs font-black uppercase tracking-widest">
               Notifications
             </h3>
           </div>
           {unreadCount > 0 && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 400, delay: 0.35 }}
-              className="flex items-center justify-center min-w-5 h-5 px-1.5 rounded-md bg-primary text-[11px] font-semibold text-primary-foreground"
-            >
+            <span className="flex min-w-5 items-center justify-center border-2 border-neo-ink bg-neo-accent px-1.5 text-[11px] font-black">
               {unreadCount}
-            </motion.span>
+            </span>
           )}
         </div>
-
         <div className="p-1.5">
-          {NOTIFICATIONS.map((notif, i) => {
-            const { icon: Icon, color } = NOTIF_ICONS[notif.type];
+          {NOTIFICATIONS.map((notif) => {
+            const { icon: Icon, bg } = NOTIF_ICONS[notif.type];
             return (
-              <motion.div
+              <div
                 key={notif.id}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.05 }}
-                whileHover={{ x: 2 }}
                 className={cn(
-                  'flex items-start gap-2 p-2 rounded-md transition-colors cursor-pointer',
-                  !notif.read ? 'bg-accent/60 hover:bg-accent' : 'hover:bg-muted',
+                  'flex cursor-pointer items-start gap-2 border-2 border-transparent p-2 transition-all duration-100 ease-linear hover:border-neo-ink hover:bg-neo-bg',
+                  !notif.read && 'bg-neo-muted/40',
                 )}
               >
-                <div className={cn('p-1.5 rounded-md shrink-0', color)}>
-                  <Icon className="w-3 h-3" />
+                <div
+                  className={cn(
+                    'flex shrink-0 items-center justify-center border-2 border-neo-ink p-1.5',
+                    bg,
+                  )}
+                >
+                  <Icon className="h-3 w-3 stroke-[3px]" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] leading-snug">
-                    <span className="font-semibold text-foreground">{notif.by}</span>{' '}
-                    <span className="text-muted-foreground">{notif.message}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12px] font-bold leading-snug">
+                    <span className="font-black uppercase">{notif.by}</span>{' '}
+                    {notif.message}
                   </p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                  <p className="mt-0.5 text-[10px] font-black uppercase tracking-widest">
                     {timeAgo(notif.timestamp)}
                   </p>
                 </div>
                 {!notif.read && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                  <span className="mt-1.5 h-2 w-2 shrink-0 border border-neo-ink bg-neo-accent" />
                 )}
-              </motion.div>
+              </div>
             );
           })}
         </div>
-      </motion.div>
+      </div>
 
       {/* Suggested */}
-      <motion.div
-        variants={item}
-        className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
-      >
-        <div className="px-3.5 py-2.5 border-b border-border">
-          <h3 className="text-[14px] font-semibold text-foreground">
+      <div className="overflow-hidden border-4 border-neo-ink bg-neo-white shadow-neo-sm">
+        <div className="border-b-4 border-neo-ink bg-neo-muted px-3.5 py-2.5">
+          <h3 className="text-xs font-black uppercase tracking-widest">
             People you may know
           </h3>
         </div>
         <div className="p-1.5">
-          {SUGGESTED_FRIENDS.map((friend, i) => (
-            <motion.div
+          {SUGGESTED_FRIENDS.map((friend) => (
+            <div
               key={friend.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.05 }}
-              className="flex items-center gap-2.5 p-2 rounded-md hover:bg-muted transition-colors"
+              className="flex items-center gap-2.5 p-2"
             >
-              <Avatar className="w-8 h-8">
-                <AvatarFallback className="text-[10px] bg-secondary text-foreground font-semibold">
+              <Avatar className="h-8 w-8 rounded-none border-2 border-neo-ink">
+                <AvatarFallback className="rounded-none bg-neo-secondary text-[10px] font-black">
                   {getInitials(friend.name)}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold truncate text-foreground">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-black uppercase">
                   {friend.name}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  Grade {friend.grade}
-                </p>
+                <p className="text-[11px] font-bold">Grade {friend.grade}</p>
               </div>
-              <motion.button
+              <button
                 type="button"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary text-primary-foreground text-[12px] font-semibold hover:bg-[#115EA3] transition-colors"
+                className="flex items-center gap-1 border-4 border-neo-ink bg-neo-accent px-2 py-1 text-[11px] font-black uppercase shadow-neo-sm transition-all duration-100 ease-linear active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
               >
-                <UserPlus className="w-3 h-3" />
+                <UserPlus className="h-3 w-3 stroke-[3px]" />
                 Add
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
           ))}
         </div>
-      </motion.div>
-    </motion.aside>
+      </div>
+    </aside>
   );
 }

@@ -5,7 +5,6 @@ import { LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/src/stores/auth-store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
-import { Button } from '@/src/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,42 +39,44 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 pl-2 pr-1.5 h-9"
+        <button
+          type="button"
+          className="flex h-11 items-center gap-2 border-4 border-neo-ink bg-neo-white px-2 shadow-neo-sm transition-all duration-100 ease-linear hover:-translate-y-0.5 hover:shadow-neo-md active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
         >
-          <Avatar className="w-7 h-7">
+          <Avatar className="h-7 w-7 rounded-none border-2 border-neo-ink">
             {user?.avatar && <AvatarImage src={user.avatar} alt={displayName} />}
-            <AvatarFallback className="text-xs bg-accent text-primary font-semibold">
+            <AvatarFallback className="rounded-none bg-neo-muted text-xs font-black text-neo-ink">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <span className="hidden md:inline text-sm font-medium max-w-[100px] truncate">
+          <span className="hidden max-w-[100px] truncate text-xs font-black uppercase tracking-wide md:inline">
             {displayName}
           </span>
-          <ChevronDown className="hidden md:block w-3.5 h-3.5 text-muted-foreground" />
-        </Button>
+          <ChevronDown className="hidden h-4 w-4 stroke-[3px] md:block" />
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>
+      <DropdownMenuContent
+        align="end"
+        className="w-56 rounded-none border-4 border-neo-ink bg-neo-white p-0 shadow-neo-md font-neo"
+      >
+        <DropdownMenuLabel className="border-b-4 border-neo-ink bg-neo-muted px-3 py-3">
           <div className="flex flex-col gap-0.5">
-            <span className="font-semibold">{displayName}</span>
-            <span className="text-xs text-muted-foreground font-normal">
-              {displayEmail}
+            <span className="font-black uppercase tracking-tight text-neo-ink">
+              {displayName}
             </span>
+            <span className="text-xs font-bold text-neo-ink">{displayEmail}</span>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 cursor-pointer">
-          <UserIcon className="w-4 h-4" />
+        <DropdownMenuItem className="cursor-pointer gap-2 rounded-none px-3 py-2.5 font-bold uppercase tracking-wide focus:bg-neo-secondary">
+          <UserIcon className="h-4 w-4 stroke-[3px]" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="m-0 bg-neo-ink h-1" />
         <DropdownMenuItem
           onClick={handleLogout}
-          className="gap-2 cursor-pointer text-[#C50F1F] focus:text-[#C50F1F] focus:bg-[#FDF3F4]"
+          className="cursor-pointer gap-2 rounded-none px-3 py-2.5 font-black uppercase tracking-wide text-neo-ink focus:bg-neo-accent"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="h-4 w-4 stroke-[3px]" />
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

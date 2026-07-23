@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import {
   CalendarCheck,
   GraduationCap,
@@ -14,8 +13,7 @@ import { HomeworkCompletionChart } from '@/src/components/analytics/homework-com
 import { WeeklyStudyHoursChart } from '@/src/components/analytics/weekly-study-chart';
 import { OverallProgressChart } from '@/src/components/analytics/overall-progress-chart';
 import { HERO_STATS, SUBJECT_MARKS, WEEKLY_STUDY_HOURS } from '@/src/lib/dummy-data';
-
-// ─── KPI helpers ─────────────────────────────────────────
+import { cn } from '@/src/lib/utils';
 
 const avgScore = Math.round(
   (SUBJECT_MARKS.reduce((a, b) => a + b.score / b.maxScore, 0) /
@@ -31,114 +29,100 @@ const KPIS = [
     value: `${HERO_STATS.attendance.value}%`,
     hint: HERO_STATS.attendance.change,
     icon: CalendarCheck,
-    accent: 'text-primary bg-accent',
+    bg: 'bg-neo-accent',
+    rotate: 'rotate-1',
   },
   {
-    label: 'Average Score',
+    label: 'Avg Score',
     value: `${avgScore}%`,
-    hint: 'Across 6 subjects',
+    hint: '6 subjects',
     icon: TrendingUp,
-    accent: 'text-[#107C10] bg-[#F1FAF1]',
+    bg: 'bg-neo-secondary',
+    rotate: '-rotate-1',
   },
   {
-    label: 'Current Grade',
+    label: 'Grade',
     value: HERO_STATS.grade.value,
     hint: HERO_STATS.grade.change,
     icon: GraduationCap,
-    accent: 'text-[#115EA3] bg-[#E8F3FC]',
+    bg: 'bg-neo-muted',
+    rotate: 'rotate-2',
   },
   {
-    label: 'Study Hours',
+    label: 'Study Hrs',
     value: `${weeklyHours}h`,
     hint: 'This week',
     icon: BookOpen,
-    accent: 'text-[#8A3707] bg-[#FFF9F5]',
+    bg: 'bg-neo-white',
+    rotate: '-rotate-2',
   },
 ] as const;
 
-// ─── Analytics Page ──────────────────────────────────────
-
 export default function AnalyticsPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-5 md:px-8 md:py-7 space-y-5">
-      {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: 'easeOut' }}
-        className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 pb-4 border-b border-border"
-      >
+    <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-8 md:py-10">
+      <header className="flex flex-col gap-4 border-b-4 border-neo-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-[12px] font-semibold tracking-[0.14em] uppercase text-primary mb-1">
-            Performance Insights
+          <p className="mb-2 inline-block -rotate-1 border-4 border-neo-ink bg-neo-accent px-2 py-0.5 text-xs font-black uppercase tracking-[0.2em] shadow-neo-sm">
+            Insights
           </p>
-          <h1 className="text-[1.75rem] md:text-[2rem] font-semibold tracking-tight text-foreground leading-none">
+          <h1 className="text-4xl font-black uppercase leading-none tracking-tighter neo-text-shadow sm:text-5xl md:text-6xl">
             Analytics
           </h1>
-          <p className="text-[14px] text-muted-foreground mt-1.5">
-            Track academic progress with clear, actionable metrics
+          <p className="mt-3 max-w-lg text-lg font-bold leading-snug">
+            Track academic progress with loud, clear metrics.
           </p>
         </div>
-        <div className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-md border border-border bg-card px-3 py-1.5 text-[12px] text-muted-foreground shadow-sm">
-          <ClipboardList className="w-3.5 h-3.5 text-primary" />
+        <div className="inline-flex items-center gap-1.5 self-start border-4 border-neo-ink bg-neo-secondary px-3 py-2 text-xs font-black uppercase tracking-wide shadow-neo-sm sm:self-auto">
+          <ClipboardList className="h-4 w-4 stroke-[3px]" />
           Semester overview
         </div>
-      </motion.header>
+      </header>
 
-      {/* KPI strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {KPIS.map(({ label, value, hint, icon: Icon, accent }, i) => (
-          <motion.div
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {KPIS.map(({ label, value, hint, icon: Icon, bg, rotate }) => (
+          <div
             key={label}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 + i * 0.06, duration: 0.35 }}
-            whileHover={{ y: -2 }}
-            className="rounded-lg border border-border bg-card px-4 py-3.5 shadow-sm flex items-center gap-3"
+            className={cn(
+              'flex items-center gap-3 border-4 border-neo-ink bg-neo-white p-3 shadow-neo-sm',
+              'transition-transform duration-200 ease-out hover:-translate-y-1 hover:shadow-neo-md',
+              rotate,
+            )}
           >
             <div
-              className={`flex items-center justify-center w-10 h-10 rounded-md shrink-0 ${accent}`}
+              className={cn(
+                'flex h-12 w-12 shrink-0 items-center justify-center border-4 border-neo-ink',
+                bg,
+              )}
             >
-              <Icon className="w-[18px] h-[18px]" strokeWidth={2} />
+              <Icon className="h-6 w-6 stroke-[3px]" />
             </div>
             <div className="min-w-0">
-              <p className="text-[12px] font-medium text-muted-foreground truncate">
+              <p className="text-[10px] font-black uppercase tracking-widest">
                 {label}
               </p>
-              <p className="text-[1.25rem] font-semibold text-foreground tabular-nums leading-tight">
+              <p className="text-2xl font-black tabular-nums leading-none">
                 {value}
               </p>
-              <p className="text-[11px] text-muted-foreground truncate mt-0.5">
-                {hint}
-              </p>
+              <p className="truncate text-[11px] font-bold">{hint}</p>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
-      {/* Charts grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Attendance — wide */}
-        <div className="lg:col-span-7 min-h-[360px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="min-h-[360px] lg:col-span-7">
           <AttendanceTrendChart />
         </div>
-
-        {/* Homework — side */}
-        <div className="lg:col-span-5 min-h-[360px]">
+        <div className="min-h-[360px] lg:col-span-5">
           <HomeworkCompletionChart />
         </div>
-
-        {/* Subjects */}
-        <div className="lg:col-span-5 min-h-[340px]">
+        <div className="min-h-[340px] lg:col-span-5">
           <SubjectPerformanceChart />
         </div>
-
-        {/* Study hours */}
-        <div className="lg:col-span-7 min-h-[340px]">
+        <div className="min-h-[340px] lg:col-span-7">
           <WeeklyStudyHoursChart />
         </div>
-
-        {/* Overall radar — full */}
         <div className="lg:col-span-12">
           <OverallProgressChart />
         </div>

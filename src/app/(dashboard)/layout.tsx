@@ -3,7 +3,7 @@
 import { Navbar } from '@/src/components/dashboard/navbar';
 import { PageTransition } from '@/src/components/dashboard/page-transition';
 
-// ─── Dashboard Layout ────────────────────────────────────
+// ─── Dashboard Layout — Neo-Brutalism ────────────────────
 
 export default function DashboardLayout({
   children,
@@ -11,14 +11,22 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Top Navigation Bar */}
-      <Navbar />
+    <div className="relative flex min-h-screen flex-col bg-neo-bg font-neo text-neo-ink">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 neo-texture-grid opacity-70"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 neo-texture-noise opacity-[0.06]"
+      />
 
-      {/* Page content with transitions */}
-      <main className="flex-1">
-        <PageTransition>{children}</PageTransition>
-      </main>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <Navbar />
+        <main className="flex-1">
+          <PageTransition>{children}</PageTransition>
+        </main>
+      </div>
     </div>
   );
 }

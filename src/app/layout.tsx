@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist_Mono, Source_Sans_3 } from 'next/font/google';
+import { Geist_Mono, Source_Sans_3, Space_Grotesk } from 'next/font/google';
 import { cn } from '@/src/lib/utils';
 import { TooltipProvider } from '@/src/components/ui/tooltip';
 import { ThemeProvider } from '@/src/components/providers/theme-provider';
@@ -8,6 +8,13 @@ import { ToastProvider } from '@/src/components/providers/toast-provider';
 import './globals.css';
 
 // ─── Fonts ───────────────────────────────────────────────
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
 
 const sourceSans = Source_Sans_3({
   subsets: ['latin'],
@@ -43,6 +50,7 @@ export default function RootLayout({
         'h-full',
         'antialiased',
         geistMono.variable,
+        spaceGrotesk.variable,
         'font-sans',
         sourceSans.variable,
       )}

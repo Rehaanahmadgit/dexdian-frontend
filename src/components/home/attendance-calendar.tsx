@@ -15,30 +15,38 @@ const MONTH_NAMES = [
 
 const DAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-const STATUS_STYLES: Record<DayStatus, { cell: string; dot: string; label: string }> = {
+const STATUS_STYLES: Record<
+  DayStatus,
+  { cell: string; dot: string; swatch: string; label: string }
+> = {
   present: {
-    cell: 'bg-[#F1FAF1] border-[#9FD89F]',
-    dot: 'bg-[#107C10]',
+    cell: 'bg-neo-muted border-neo-ink',
+    dot: 'bg-neo-ink',
+    swatch: 'bg-neo-muted',
     label: 'Present',
   },
   absent: {
-    cell: 'bg-[#FDF3F4] border-[#F1B6BC]',
-    dot: 'bg-[#C50F1F]',
+    cell: 'bg-neo-accent border-neo-ink',
+    dot: 'bg-neo-ink',
+    swatch: 'bg-neo-accent',
     label: 'Absent',
   },
   late: {
-    cell: 'bg-[#FFF9F5] border-[#F5D0B5]',
-    dot: 'bg-[#8A3707]',
+    cell: 'bg-neo-secondary border-neo-ink',
+    dot: 'bg-neo-ink',
+    swatch: 'bg-neo-secondary',
     label: 'Late',
   },
   holiday: {
-    cell: 'bg-muted/40 border-border',
-    dot: 'bg-muted-foreground/35',
+    cell: 'bg-neo-bg border-neo-ink',
+    dot: 'bg-neo-ink',
+    swatch: 'bg-neo-bg',
     label: 'Holiday',
   },
   future: {
     cell: 'bg-transparent border-transparent',
     dot: 'bg-transparent',
+    swatch: 'bg-transparent',
     label: '—',
   },
 };
@@ -176,14 +184,16 @@ export function AttendanceCalendar() {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15, duration: 0.35, ease: 'easeOut' as const }}
-      className="rounded-lg border border-border bg-card shadow-sm h-full flex flex-col overflow-hidden"
+      transition={{ delay: 0.15, duration: 0.2, ease: 'linear' }}
+      className="flex h-full flex-col overflow-hidden rounded-none border-4 border-neo-ink bg-neo-white font-neo shadow-neo-md"
     >
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
-          <h3 className="text-[15px] font-semibold text-foreground">Attendance</h3>
-          <span className="text-[14px] font-semibold text-primary tabular-nums">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b-4 border-neo-ink bg-neo-secondary px-4 py-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <h3 className="text-sm font-black uppercase tracking-wide text-neo-ink">
+            Attendance
+          </h3>
+          <span className="border-2 border-neo-ink bg-neo-white px-1.5 py-0.5 text-[13px] font-black tabular-nums text-neo-ink">
             {allTime.pct}%
           </span>
         </div>
@@ -193,44 +203,44 @@ export function AttendanceCalendar() {
             onClick={() => canPrev && setMonthIndex(monthIndex - 1)}
             disabled={!canPrev}
             className={cn(
-              'p-1.5 rounded-md transition-colors',
+              'rounded-none border-2 border-neo-ink p-1.5 transition-colors duration-100 ease-linear',
               canPrev
-                ? 'hover:bg-muted text-foreground'
-                : 'text-muted-foreground/30 cursor-default',
+                ? 'bg-neo-white text-neo-ink hover:bg-neo-accent'
+                : 'cursor-default border-transparent bg-transparent text-neo-ink/30',
             )}
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="h-4 w-4 stroke-[3px]" />
           </button>
-          <span className="text-[14px] font-semibold min-w-[128px] text-center tabular-nums">
+          <span className="min-w-[128px] text-center text-[13px] font-black uppercase tabular-nums text-neo-ink">
             {MONTH_NAMES[currentMonth.month]} {currentMonth.year}
           </span>
           <button
             onClick={() => canNext && setMonthIndex(monthIndex + 1)}
             disabled={!canNext}
             className={cn(
-              'p-1.5 rounded-md transition-colors',
+              'rounded-none border-2 border-neo-ink p-1.5 transition-colors duration-100 ease-linear',
               canNext
-                ? 'hover:bg-muted text-foreground'
-                : 'text-muted-foreground/30 cursor-default',
+                ? 'bg-neo-white text-neo-ink hover:bg-neo-accent'
+                : 'cursor-default border-transparent bg-transparent text-neo-ink/30',
             )}
             aria-label="Next month"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4 stroke-[3px]" />
           </button>
         </div>
 
-        <div className="hidden md:flex items-center gap-3 text-[12px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#107C10]" />
+        <div className="hidden items-center gap-3 text-[11px] font-black uppercase md:flex">
+          <span className="flex items-center gap-1 text-neo-ink">
+            <span className="h-2 w-2 rounded-none border border-neo-ink bg-neo-muted" />
             {stats.present}
           </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#C50F1F]" />
+          <span className="flex items-center gap-1 text-neo-ink">
+            <span className="h-2 w-2 rounded-none border border-neo-ink bg-neo-accent" />
             {stats.absent}
           </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[#8A3707]" />
+          <span className="flex items-center gap-1 text-neo-ink">
+            <span className="h-2 w-2 rounded-none border border-neo-ink bg-neo-secondary" />
             {stats.late}
           </span>
         </div>
@@ -243,26 +253,26 @@ export function AttendanceCalendar() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="flex-1 min-h-0 flex flex-col px-3 pt-2.5 pb-1.5 md:px-4"
+          transition={{ duration: 0.1, ease: 'linear' }}
+          className="flex min-h-0 flex-1 flex-col px-3 pb-1.5 pt-2.5 md:px-4"
         >
-          <div className="grid grid-cols-7 mb-1 shrink-0">
+          <div className="mb-1 grid shrink-0 grid-cols-7">
             {DAY_HEADERS.map((day) => (
               <div
                 key={day}
-                className="text-center text-[12px] font-semibold text-muted-foreground py-1"
+                className="py-1 text-center text-[11px] font-black uppercase text-neo-ink"
               >
                 {day}
               </div>
             ))}
           </div>
 
-          <div className="flex-1 min-h-0 grid grid-rows-6 gap-1">
+          <div className="grid min-h-0 flex-1 grid-rows-6 gap-1">
             {weeks.map((week, wi) => (
-              <div key={wi} className="grid grid-cols-7 gap-1 min-h-0">
+              <div key={wi} className="grid min-h-0 grid-cols-7 gap-1">
                 {week.map((day, di) => {
                   if (!day.isCurrentMonth || day.date === 0) {
-                    return <div key={di} className="min-h-0 rounded-md" />;
+                    return <div key={di} className="min-h-0 rounded-none" />;
                   }
 
                   const style = STATUS_STYLES[day.status];
@@ -271,10 +281,11 @@ export function AttendanceCalendar() {
                     <div
                       key={di}
                       className={cn(
-                        'relative min-h-0 rounded-md border flex flex-col items-center justify-center gap-0.5 transition-colors',
+                        'relative flex min-h-0 flex-col items-center justify-center gap-0.5 rounded-none border-2 transition-colors duration-100 ease-linear',
                         style.cell,
-                        day.isToday && 'ring-2 ring-primary ring-offset-1 ring-offset-card',
-                        day.status !== 'future' && 'cursor-pointer hover:brightness-[0.98]',
+                        day.isToday && 'outline outline-2 outline-offset-[-2px] outline-neo-ink shadow-neo-sm',
+                        day.status !== 'future' &&
+                          'cursor-pointer hover:-translate-y-px hover:shadow-neo-sm',
                       )}
                       onMouseEnter={(e) => {
                         if (day.status === 'future') return;
@@ -289,18 +300,20 @@ export function AttendanceCalendar() {
                     >
                       <span
                         className={cn(
-                          'text-[13px] md:text-[14px] font-semibold tabular-nums leading-none',
+                          'text-[13px] font-black tabular-nums leading-none md:text-[14px]',
                           day.isToday
-                            ? 'text-primary'
+                            ? 'text-neo-ink'
                             : day.status === 'future'
-                              ? 'text-muted-foreground/30'
-                              : 'text-foreground',
+                              ? 'text-neo-ink/25'
+                              : 'text-neo-ink',
                         )}
                       >
                         {day.date}
                       </span>
                       {day.status !== 'future' && (
-                        <span className={cn('w-1.5 h-1.5 rounded-full', style.dot)} />
+                        <span
+                          className={cn('h-1.5 w-1.5 rounded-none border border-neo-ink', style.dot)}
+                        />
                       )}
                     </div>
                   );
@@ -312,7 +325,7 @@ export function AttendanceCalendar() {
       </AnimatePresence>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 md:gap-5 px-4 py-2 border-t border-border shrink-0">
+      <div className="flex shrink-0 items-center justify-center gap-4 border-t-4 border-neo-ink px-4 py-2 md:gap-5">
         {(
           Object.entries(STATUS_STYLES) as [
             DayStatus,
@@ -322,31 +335,30 @@ export function AttendanceCalendar() {
           .filter(([key]) => key !== 'future')
           .map(([key, style]) => (
             <div key={key} className="flex items-center gap-1.5">
-              <span className={cn('w-2 h-2 rounded-full', style.dot)} />
-              <span className="text-[12px] text-muted-foreground">{style.label}</span>
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-none border border-neo-ink',
+                  style.swatch,
+                )}
+              />
+              <span className="text-[11px] font-black uppercase text-neo-ink">
+                {style.label}
+              </span>
             </div>
           ))}
       </div>
 
       {tooltip && (
         <div
-          className="fixed z-50 pointer-events-none px-2.5 py-1.5 rounded-md bg-popover border border-border shadow-lg text-[12px]"
+          className="pointer-events-none fixed z-50 rounded-none border-4 border-neo-ink bg-neo-white px-2.5 py-1.5 text-[12px] shadow-neo-sm"
           style={{
             left: tooltip.x,
             top: tooltip.y,
             transform: 'translate(-50%, -100%)',
           }}
         >
-          <p className="font-medium">{formattedDate(tooltip.day.iso)}</p>
-          <p
-            className={cn(
-              'font-semibold mt-0.5',
-              tooltip.day.status === 'present' && 'text-[#107C10]',
-              tooltip.day.status === 'absent' && 'text-[#C50F1F]',
-              tooltip.day.status === 'late' && 'text-[#8A3707]',
-              tooltip.day.status === 'holiday' && 'text-muted-foreground',
-            )}
-          >
+          <p className="font-black uppercase">{formattedDate(tooltip.day.iso)}</p>
+          <p className="mt-0.5 font-black uppercase text-neo-ink">
             {STATUS_STYLES[tooltip.day.status].label}
           </p>
         </div>

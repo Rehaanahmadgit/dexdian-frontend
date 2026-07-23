@@ -497,10 +497,10 @@ export interface HomeworkCompletion {
 }
 
 export const HOMEWORK_COMPLETION: HomeworkCompletion[] = [
-  { status: 'Completed', count: 24, fill: '#107C10' },
-  { status: 'Pending', count: 4, fill: '#8A3707' },
-  { status: 'Overdue', count: 1, fill: '#C50F1F' },
-  { status: 'Graded', count: 18, fill: '#0F6CBD' },
+  { status: 'Completed', count: 24, fill: '#FFD93D' },
+  { status: 'Pending', count: 4, fill: '#C4B5FD' },
+  { status: 'Overdue', count: 1, fill: '#FF6B6B' },
+  { status: 'Graded', count: 18, fill: '#000000' },
 ];
 
 // ─── Weekly Study Hours ──────────────────────────────────

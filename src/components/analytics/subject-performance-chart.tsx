@@ -13,8 +13,7 @@ import {
 } from 'lucide-react';
 import { SUBJECT_SCORES } from '@/src/lib/dummy-data';
 import { ChartCard } from '@/src/components/analytics/chart-card';
-
-// ─── Subject metadata ────────────────────────────────────
+import { cn } from '@/src/lib/utils';
 
 const subjectMeta: Record<string, { name: string; icon: LucideIcon }> = {
   Math: { name: 'Mathematics', icon: Calculator },
@@ -25,7 +24,7 @@ const subjectMeta: Record<string, { name: string; icon: LucideIcon }> = {
   PE: { name: 'Physical Education', icon: Dumbbell },
 };
 
-// ─── Component ───────────────────────────────────────────
+const BAR_COLORS = ['bg-neo-accent', 'bg-neo-secondary', 'bg-neo-muted'] as const;
 
 export function SubjectPerformanceChart() {
   return (
@@ -33,7 +32,7 @@ export function SubjectPerformanceChart() {
       title="Subject Performance"
       subtitle="Your score vs class average"
       icon={BarChart3}
-      delay={0.22}
+      headerBg="bg-neo-muted"
     >
       <div className="space-y-3.5">
         {SUBJECT_SCORES.map((item, i) => {
@@ -43,35 +42,24 @@ export function SubjectPerformanceChart() {
           };
           const Icon = meta.icon;
           const delta = item.score - item.classAvg;
+          const bar = BAR_COLORS[i % BAR_COLORS.length];
 
           return (
-            <motion.div
-              key={item.subject}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + i * 0.05, duration: 0.3 }}
-              className="space-y-1.5"
-            >
+            <div key={item.subject} className="space-y-1.5">
               <div className="flex items-center gap-2.5">
-                <div
-                  className="w-8 h-8 rounded-md flex items-center justify-center shrink-0 bg-muted/70"
-                  style={{ color: item.fill }}
-                >
-                  <Icon className="w-4 h-4" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-neo-ink bg-neo-bg">
+                  <Icon className="h-4 w-4 stroke-[3px]" />
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[13px] font-medium truncate text-foreground">
+                    <span className="truncate text-xs font-black uppercase tracking-tight">
                       {meta.name}
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[12px] text-muted-foreground tabular-nums">
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="text-[11px] font-bold tabular-nums">
                         Avg {item.classAvg}
                       </span>
-                      <span
-                        className="text-[13px] font-semibold tabular-nums"
-                        style={{ color: item.fill }}
-                      >
+                      <span className="border-2 border-neo-ink bg-neo-secondary px-1 text-xs font-black tabular-nums">
                         {item.score}%
                       </span>
                     </div>
@@ -79,30 +67,28 @@ export function SubjectPerformanceChart() {
                 </div>
               </div>
 
-              <div className="relative h-2 rounded-full bg-muted overflow-hidden ml-10">
-                {/* Class average marker */}
+              <div className="relative ml-10 h-3 overflow-hidden border-2 border-neo-ink bg-neo-bg">
                 <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-foreground/25 z-10"
+                  className="absolute top-0 bottom-0 z-10 w-0.5 bg-neo-ink"
                   style={{ left: `${item.classAvg}%` }}
                 />
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${item.score}%` }}
                   transition={{
-                    delay: 0.35 + i * 0.05,
-                    duration: 0.6,
+                    delay: 0.1 + i * 0.04,
+                    duration: 0.4,
                     ease: 'easeOut',
                   }}
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: item.fill }}
+                  className={cn('h-full', bar)}
                 />
               </div>
 
-              <p className="text-[11px] text-muted-foreground ml-10">
+              <p className="ml-10 text-[11px] font-bold uppercase tracking-wide">
                 {delta >= 0 ? '+' : ''}
-                {delta} vs class average
+                {delta} vs class avg
               </p>
-            </motion.div>
+            </div>
           );
         })}
       </div>
