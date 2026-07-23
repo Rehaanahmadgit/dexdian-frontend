@@ -37,7 +37,7 @@ export function Sidebar() {
       {/* Footer */}
       <div className="px-3 py-3 border-t border-border">
         <p className="text-[11px] text-muted-foreground text-center">
-          DexDain v0.1.0
+          DexDian v0.1.0
         </p>
       </div>
     </aside>

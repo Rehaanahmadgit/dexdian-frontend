@@ -29,7 +29,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
         <SheetHeader className="flex flex-row items-center justify-between px-4 h-14 border-b border-border space-y-0">
           <SheetTitle className="flex items-center gap-2 text-base font-bold">
             <GraduationCap className="w-5 h-5 text-primary" />
-            Dex<span className="text-primary">Dain</span>
+            Dex<span className="text-primary">Dian</span>
           </SheetTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />

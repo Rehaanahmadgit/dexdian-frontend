@@ -8,29 +8,29 @@ import { cn } from '@/src/lib/utils';
 // ─── Subject color map ───────────────────────────────────
 
 const SUBJECT_COLORS: Record<string, string> = {
-  Mathematics: 'bg-indigo-50 dark:bg-indigo-950/20 border-indigo-100 dark:border-indigo-800/30',
-  Science: 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-800/30',
-  English: 'bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-800/30',
-  History: 'bg-rose-50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-800/30',
-  'Computer Science': 'bg-violet-50 dark:bg-violet-950/20 border-violet-100 dark:border-violet-800/30',
-  'Physical Education': 'bg-cyan-50 dark:bg-cyan-950/20 border-cyan-100 dark:border-cyan-800/30',
-  'Art & Craft': 'bg-pink-50 dark:bg-pink-950/20 border-pink-100 dark:border-pink-800/30',
-  Music: 'bg-orange-50 dark:bg-orange-950/20 border-orange-100 dark:border-orange-800/30',
-  Library: 'bg-slate-50 dark:bg-slate-950/20 border-slate-100 dark:border-slate-800/30',
-  'Club Activity': 'bg-teal-50 dark:bg-teal-950/20 border-teal-100 dark:border-teal-800/30',
+  Mathematics: 'bg-[#E8F3FC] border-[#B4D6F2]',
+  Science: 'bg-[#F1FAF1] border-[#9FD89F]',
+  English: 'bg-[#FFF9F5] border-[#F5D0B5]',
+  History: 'bg-[#FDF3F4] border-[#F1B6BC]',
+  'Computer Science': 'bg-[#EEF0FB] border-[#C5CAE8]',
+  'Physical Education': 'bg-[#E8F7F7] border-[#9FD6D6]',
+  'Art & Craft': 'bg-[#FDF3F4] border-[#F1B6BC]',
+  Music: 'bg-[#FFF9F5] border-[#F5D0B5]',
+  Library: 'bg-muted border-border',
+  'Club Activity': 'bg-[#E8F7F7] border-[#9FD6D6]',
 };
 
 const SUBJECT_TEXT: Record<string, string> = {
-  Mathematics: 'text-indigo-700 dark:text-indigo-300',
-  Science: 'text-emerald-700 dark:text-emerald-300',
-  English: 'text-amber-700 dark:text-amber-300',
-  History: 'text-rose-700 dark:text-rose-300',
-  'Computer Science': 'text-violet-700 dark:text-violet-300',
-  'Physical Education': 'text-cyan-700 dark:text-cyan-300',
-  'Art & Craft': 'text-pink-700 dark:text-pink-300',
-  Music: 'text-orange-700 dark:text-orange-300',
-  Library: 'text-slate-700 dark:text-slate-300',
-  'Club Activity': 'text-teal-700 dark:text-teal-300',
+  Mathematics: 'text-[#0C3B5E]',
+  Science: 'text-[#0E700E]',
+  English: 'text-[#8A3707]',
+  History: 'text-[#C50F1F]',
+  'Computer Science': 'text-[#115EA3]',
+  'Physical Education': 'text-[#038387]',
+  'Art & Craft': 'text-[#C50F1F]',
+  Music: 'text-[#8A3707]',
+  Library: 'text-foreground',
+  'Club Activity': 'text-[#038387]',
 };
 
 // ─── Component ───────────────────────────────────────────
@@ -45,17 +45,19 @@ export function PeriodTimetable() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.45, duration: 0.4, ease: 'easeOut' as const }}
-      className="rounded-2xl border border-border bg-card overflow-hidden"
+      className="rounded-lg border border-border bg-card overflow-hidden shadow-sm"
     >
       {/* ── Header ──────────────────────────────────── */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2.5">
-          <h3 className="text-base font-semibold tracking-tight">Class Timetable</h3>
-          <span className="hidden sm:inline text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
+          <h3 className="text-[15px] font-semibold tracking-tight text-foreground">
+            Class Timetable
+          </h3>
+          <span className="hidden sm:inline text-[12px] text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
             Mon–Sat · 8:00 AM – 12:30 PM
           </span>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
           <Clock className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">6 periods daily</span>
         </div>
@@ -67,14 +69,14 @@ export function PeriodTimetable() {
           {/* Column headers: empty + day names */}
           <thead>
             <tr className="border-b border-border/60">
-              <th className="sticky left-0 bg-card z-10 w-[100px] md:w-[120px] py-3 px-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="sticky left-0 bg-card z-10 w-[100px] md:w-[120px] py-3 px-3 text-left text-[13px] font-semibold text-muted-foreground uppercase tracking-wider">
                 Period
               </th>
               {dayLabels.map((day, i) => (
                 <th
                   key={day}
                   className={cn(
-                    'py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider min-w-[90px] md:min-w-[110px]',
+                    'py-3 px-2 text-center text-[13px] font-semibold uppercase tracking-wider min-w-[90px] md:min-w-[110px]',
                     i === new Date().getDay() - 1
                       ? 'text-primary bg-primary/5'
                       : 'text-muted-foreground',
@@ -97,8 +99,8 @@ export function PeriodTimetable() {
                       colSpan={7}
                       className="py-2.5 px-4 text-center"
                     >
-                      <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
-                        <Clock className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-2 px-4 py-1 rounded-md bg-muted/60 text-[13px] font-medium text-muted-foreground">
+                        <Clock className="w-3.5 h-3.5" />
                         Break · {template.time}
                       </span>
                     </td>
@@ -111,10 +113,10 @@ export function PeriodTimetable() {
                   {/* Period # and time */}
                   <td className="sticky left-0 bg-card z-10 py-3 px-3 border-r border-border/30">
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-muted-foreground">
+                      <span className="text-[13px] font-bold text-muted-foreground">
                         {pIdx + 1}
                       </span>
-                      <span className="text-[11px] text-muted-foreground/60 font-mono tabular-nums leading-tight mt-0.5">
+                      <span className="text-[12px] text-muted-foreground/70 font-mono tabular-nums leading-tight mt-0.5">
                         {template.time.split(' - ')[0]}
                       </span>
                     </div>
@@ -144,16 +146,16 @@ export function PeriodTimetable() {
                         >
                           <p
                             className={cn(
-                              'text-xs md:text-sm font-semibold leading-snug',
+                              'text-sm md:text-[15px] font-semibold leading-snug',
                               colorText || 'text-foreground',
                             )}
                           >
                             {period.subject}
                           </p>
-                          <p className="text-[10px] md:text-[11px] text-muted-foreground mt-0.5 leading-tight">
+                          <p className="text-[12px] md:text-[13px] text-muted-foreground mt-0.5 leading-tight">
                             {period.teacher}
                           </p>
-                          <p className="text-[10px] md:text-[11px] text-muted-foreground/60 leading-tight">
+                          <p className="text-[12px] text-muted-foreground/70 leading-tight">
                             {period.room}
                           </p>
                         </div>

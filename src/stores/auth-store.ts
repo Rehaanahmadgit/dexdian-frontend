@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import Cookies from 'js-cookie';
+import { STUDENT } from '@/src/lib/dummy-data';
 import type { User } from '@/src/types';
 
 // ─── Types ───────────────────────────────────────────────
@@ -19,7 +20,7 @@ interface AuthState {
 
 // ─── Store ───────────────────────────────────────────────
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: true,
@@ -37,19 +38,55 @@ export const useAuthStore = create<AuthState>((set) => ({
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
+    // Keep a copy so refresh still has profile data
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dexdian_user', JSON.stringify(user));
+    }
     set({ user, isAuthenticated: true, isLoading: false });
   },
 
   logout: () => {
     Cookies.remove('accessToken');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('dexdian_user');
+    }
     set({ user: null, isAuthenticated: false, isLoading: false });
   },
 
   setLoading: (isLoading) => set({ isLoading }),
 
   hydrate: () => {
+    if (typeof window === 'undefined') return;
+
     const token = Cookies.get('accessToken');
-    // Mark loading as done — actual user fetch happens in the app
-    set({ isLoading: false, isAuthenticated: !!token });
+    if (!token) {
+      set({ user: null, isAuthenticated: false, isLoading: false });
+      return;
+    }
+
+    // Prefer existing in-memory user, then localStorage, then demo fallback
+    let user = get().user;
+    if (!user) {
+      try {
+        const raw = localStorage.getItem('dexdian_user');
+        if (raw) user = JSON.parse(raw) as User;
+      } catch {
+        user = null;
+      }
+    }
+
+    if (!user) {
+      user = {
+        id: STUDENT.id,
+        name: STUDENT.name,
+        email: STUDENT.email,
+        role: STUDENT.role,
+        avatar: STUDENT.avatar ?? undefined,
+        grade: STUDENT.grade,
+        section: STUDENT.section,
+      };
+    }
+
+    set({ user, isAuthenticated: true, isLoading: false });
   },
 }));

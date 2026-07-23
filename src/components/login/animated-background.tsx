@@ -13,15 +13,14 @@ interface Orb {
   color: string;
 }
 
-// ─── Constants ───────────────────────────────────────────
+// ─── Constants (Fluent Theme blues) ──────────────────────
 
-const ORB_COUNT = 5;
+const ORB_COUNT = 4;
 const COLORS = [
-  'rgba(99, 102, 241, 0.25)',   // indigo
-  'rgba(139, 92, 246, 0.20)',   // violet
-  'rgba(59, 130, 246, 0.22)',   // blue
-  'rgba(16, 185, 129, 0.18)',   // emerald
-  'rgba(236, 72, 153, 0.15)',   // pink
+  'rgba(15, 108, 189, 0.14)', // Fluent themePrimary
+  'rgba(17, 94, 163, 0.12)', // Fluent themeDark
+  'rgba(12, 59, 94, 0.10)', // Fluent themeDarker
+  'rgba(40, 153, 245, 0.08)', // Fluent themeLight
 ];
 
 // ─── Component ───────────────────────────────────────────
@@ -38,7 +37,6 @@ export function AnimatedBackground() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // --- Resize handler ---
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -46,17 +44,15 @@ export function AnimatedBackground() {
     resize();
     window.addEventListener('resize', resize);
 
-    // --- Init orbs ---
     orbsRef.current = Array.from({ length: ORB_COUNT }, (_, i) => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      radius: 120 + Math.random() * 200,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      radius: 160 + Math.random() * 220,
       color: COLORS[i % COLORS.length],
     }));
 
-    // --- Animation loop ---
     let frame = 0;
     const animate = () => {
       if (!canvas || !ctx) return;
@@ -64,22 +60,22 @@ export function AnimatedBackground() {
       frame++;
 
       for (const orb of orbsRef.current) {
-        // Move
         orb.x += orb.vx;
         orb.y += orb.vy;
 
-        // Bounce off edges
         if (orb.x - orb.radius < 0 || orb.x + orb.radius > canvas.width) orb.vx *= -1;
         if (orb.y - orb.radius < 0 || orb.y + orb.radius > canvas.height) orb.vy *= -1;
 
-        // Add slight organic wobble
-        orb.x += Math.sin(frame * 0.01 + orb.radius) * 0.1;
-        orb.y += Math.cos(frame * 0.012 + orb.radius) * 0.1;
+        orb.x += Math.sin(frame * 0.008 + orb.radius) * 0.08;
+        orb.y += Math.cos(frame * 0.01 + orb.radius) * 0.08;
 
-        // Draw soft radial gradient orb
         const gradient = ctx.createRadialGradient(
-          orb.x, orb.y, 0,
-          orb.x, orb.y, orb.radius,
+          orb.x,
+          orb.y,
+          0,
+          orb.x,
+          orb.y,
+          orb.radius,
         );
         gradient.addColorStop(0, orb.color);
         gradient.addColorStop(1, 'rgba(0,0,0,0)');
@@ -105,7 +101,7 @@ export function AnimatedBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 -z-10 pointer-events-none"
+      className="absolute inset-0 pointer-events-none opacity-80"
     />
   );
 }

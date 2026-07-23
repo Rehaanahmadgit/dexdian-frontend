@@ -85,12 +85,12 @@ export interface SubjectMark {
 }
 
 export const SUBJECT_MARKS: SubjectMark[] = [
-  { subject: 'Mathematics', score: 88, maxScore: 100, color: '#6366f1', icon: '📐' },
-  { subject: 'Science', score: 76, maxScore: 100, color: '#10b981', icon: '🔬' },
-  { subject: 'English', score: 92, maxScore: 100, color: '#f59e0b', icon: '📖' },
-  { subject: 'History', score: 68, maxScore: 100, color: '#ef4444', icon: '🏛️' },
-  { subject: 'Computer Science', score: 95, maxScore: 100, color: '#8b5cf6', icon: '💻' },
-  { subject: 'Physical Education', score: 80, maxScore: 100, color: '#06b6d4', icon: '⚽' },
+  { subject: 'Mathematics', score: 88, maxScore: 100, color: '#0F6CBD', icon: '📐' },
+  { subject: 'Science', score: 76, maxScore: 100, color: '#107C10', icon: '🔬' },
+  { subject: 'English', score: 92, maxScore: 100, color: '#8A3707', icon: '📖' },
+  { subject: 'History', score: 68, maxScore: 100, color: '#C50F1F', icon: '🏛️' },
+  { subject: 'Computer Science', score: 95, maxScore: 100, color: '#115EA3', icon: '💻' },
+  { subject: 'Physical Education', score: 80, maxScore: 100, color: '#038387', icon: '⚽' },
 ];
 
 // ─── Daily Performance ───────────────────────────────────
@@ -480,12 +480,12 @@ export interface SubjectScorePoint {
 }
 
 export const SUBJECT_SCORES: SubjectScorePoint[] = [
-  { subject: 'Math', score: 88, classAvg: 72, fill: '#6366f1' },
-  { subject: 'Science', score: 76, classAvg: 68, fill: '#10b981' },
-  { subject: 'English', score: 92, classAvg: 78, fill: '#f59e0b' },
-  { subject: 'History', score: 68, classAvg: 70, fill: '#ef4444' },
-  { subject: 'CS', score: 95, classAvg: 74, fill: '#8b5cf6' },
-  { subject: 'PE', score: 80, classAvg: 82, fill: '#06b6d4' },
+  { subject: 'Math', score: 88, classAvg: 72, fill: '#0F6CBD' },
+  { subject: 'Science', score: 76, classAvg: 68, fill: '#107C10' },
+  { subject: 'English', score: 92, classAvg: 78, fill: '#8A3707' },
+  { subject: 'History', score: 68, classAvg: 70, fill: '#C50F1F' },
+  { subject: 'CS', score: 95, classAvg: 74, fill: '#115EA3' },
+  { subject: 'PE', score: 80, classAvg: 82, fill: '#038387' },
 ];
 
 // ─── Homework Completion Stats ───────────────────────────
@@ -497,10 +497,10 @@ export interface HomeworkCompletion {
 }
 
 export const HOMEWORK_COMPLETION: HomeworkCompletion[] = [
-  { status: 'Completed', count: 24, fill: '#10b981' },
-  { status: 'Pending', count: 4, fill: '#f59e0b' },
-  { status: 'Overdue', count: 1, fill: '#ef4444' },
-  { status: 'Graded', count: 18, fill: '#6366f1' },
+  { status: 'Completed', count: 24, fill: '#107C10' },
+  { status: 'Pending', count: 4, fill: '#8A3707' },
+  { status: 'Overdue', count: 1, fill: '#C50F1F' },
+  { status: 'Graded', count: 18, fill: '#0F6CBD' },
 ];
 
 // ─── Weekly Study Hours ──────────────────────────────────

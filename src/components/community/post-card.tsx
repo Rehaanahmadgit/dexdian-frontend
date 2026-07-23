@@ -25,114 +25,173 @@ function formatTimestamp(iso: string): string {
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
   if (hrs < 24) return `${hrs}h ago`;
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
 }
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: 'easeOut' as const },
+  },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+};
 
 // ─── Component ───────────────────────────────────────────
 
 interface PostCardProps {
   post: CommunityPost;
+  index?: number;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, index = 0 }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isSaved, setIsSaved] = useState(post.isSaved);
   const [likes, setLikes] = useState(post.likes);
+  const [likeBurst, setLikeBurst] = useState(false);
 
   const initials = getInitials(post.author.name);
 
   const handleLike = () => {
-    setIsLiked((prev) => !prev);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+    const next = !isLiked;
+    setIsLiked(next);
+    setLikes((prev) => (next ? prev + 1 : prev - 1));
+    if (next) {
+      setLikeBurst(true);
+      setTimeout(() => setLikeBurst(false), 400);
+    }
   };
 
-  const handleSave = () => setIsSaved((prev) => !prev);
+  const handleSave = () => setIsSaved((p) => !p);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' as const }}
-      className="rounded-lg border border-border bg-card p-3 hover:border-border/80 transition-colors"
+    <motion.article
+      layout
+      variants={cardVariants}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      whileHover={{ y: -2 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      className="rounded-lg border border-border bg-card p-4 shadow-sm"
+      style={{ transitionDelay: `${Math.min(index, 6) * 20}ms` }}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-2.5">
+      <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
-          <Avatar className="w-8 h-8">
-            <AvatarFallback className="text-[11px] bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-primary font-bold">
+          <Avatar className="w-10 h-10">
+            <AvatarFallback className="text-[12px] bg-accent text-primary font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[13px] font-semibold leading-tight">{post.author.name}</p>
-            <p className="text-[11px] text-muted-foreground">
-              {post.author.role} • {formatTimestamp(post.timestamp)}
+            <p className="text-[14px] font-semibold leading-tight text-foreground">
+              {post.author.name}
+            </p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">
+              {post.author.role} · {formatTimestamp(post.timestamp)}
             </p>
           </div>
         </div>
-        <button className="p-1 rounded-md hover:bg-muted transition-colors">
-          <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+        <button
+          type="button"
+          className="p-1.5 rounded-md hover:bg-muted transition-colors"
+        >
+          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
         </button>
       </div>
 
       {/* Content */}
-      <p className="text-[13px] leading-relaxed whitespace-pre-wrap mb-2.5">{post.content}</p>
+      <p className="text-[14px] leading-relaxed whitespace-pre-wrap mb-3 text-foreground">
+        {post.content}
+      </p>
 
       {/* Image */}
       {post.image && (
-        <div className="mb-2.5 -mx-3 sm:mx-0 rounded-none sm:rounded-md overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 h-40 flex items-center justify-center">
-          <span className="text-3xl">📸</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="mb-3 -mx-4 sm:mx-0 rounded-none sm:rounded-md overflow-hidden bg-gradient-to-br from-accent to-[#E8F3FC] h-44 flex items-center justify-center"
+        >
+          <span className="text-4xl">📸</span>
+        </motion.div>
       )}
 
       {/* Stats */}
-      <div className="flex items-center gap-1 mb-2.5 text-[11px] text-muted-foreground">
-        <span>{likes} likes</span>
-        <span className="mx-1">•</span>
+      <div className="flex items-center gap-1 mb-3 text-[12px] text-muted-foreground">
+        <motion.span
+          key={likes}
+          initial={{ scale: 1.15 }}
+          animate={{ scale: 1 }}
+          className="tabular-nums"
+        >
+          {likes} likes
+        </motion.span>
+        <span className="mx-1">·</span>
         <span>{post.comments} comments</span>
-        <span className="mx-1">•</span>
+        <span className="mx-1">·</span>
         <span>{post.shares} shares</span>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-border -mx-3" />
+      <div className="border-t border-border -mx-4" />
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-2">
-        <button
+      <div className="flex items-center justify-between pt-2.5">
+        <motion.button
+          type="button"
           onClick={handleLike}
+          whileTap={{ scale: 0.92 }}
           className={cn(
-            'flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all hover:bg-red-50 dark:hover:bg-red-950/30',
-            isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500',
+            'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold transition-colors',
+            isLiked
+              ? 'text-[#C50F1F] bg-[#FDF3F4]'
+              : 'text-muted-foreground hover:text-[#C50F1F] hover:bg-[#FDF3F4]',
           )}
         >
-          <Heart className={cn('w-3.5 h-3.5 transition-all', isLiked && 'fill-current scale-110')} />
+          <motion.span
+            animate={likeBurst ? { scale: [1, 1.35, 1] } : { scale: 1 }}
+            transition={{ duration: 0.35 }}
+          >
+            <Heart className={cn('w-3.5 h-3.5', isLiked && 'fill-current')} />
+          </motion.span>
           Like
-        </button>
+        </motion.button>
 
-        <button className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium text-muted-foreground hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all">
+        <button
+          type="button"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold text-muted-foreground hover:text-primary hover:bg-accent transition-colors"
+        >
           <MessageCircle className="w-3.5 h-3.5" />
           Comment
         </button>
 
-        <button className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium text-muted-foreground hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all">
+        <button
+          type="button"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold text-muted-foreground hover:text-[#107C10] hover:bg-[#F1FAF1] transition-colors"
+        >
           <Share2 className="w-3.5 h-3.5" />
           Share
         </button>
 
-        <button
+        <motion.button
+          type="button"
           onClick={handleSave}
+          whileTap={{ scale: 0.92 }}
           className={cn(
-            'flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all',
+            'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[12px] font-semibold transition-colors',
             isSaved
-              ? 'text-amber-500'
-              : 'text-muted-foreground hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30',
+              ? 'text-[#8A3707] bg-[#FFF9F5]'
+              : 'text-muted-foreground hover:text-[#8A3707] hover:bg-[#FFF9F5]',
           )}
         >
-          <Bookmark className={cn('w-3.5 h-3.5 transition-all', isSaved && 'fill-current')} />
+          <Bookmark className={cn('w-3.5 h-3.5', isSaved && 'fill-current')} />
           Save
-        </button>
+        </motion.button>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

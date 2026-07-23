@@ -7,13 +7,31 @@ import { cn } from '@/src/lib/utils';
 
 // ─── Helpers ─────────────────────────────────────────────
 
-const PRIORITY_STYLES: Record<HomeworkItem['priority'], { bg: string; text: string; dot: string }> = {
-  high: { bg: 'bg-red-50 dark:bg-red-950/30', text: 'text-red-600 dark:text-red-400', dot: 'bg-red-500' },
-  medium: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-600 dark:text-amber-400', dot: 'bg-amber-500' },
-  low: { bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-600 dark:text-emerald-400', dot: 'bg-emerald-500' },
+const PRIORITY_STYLES: Record<
+  HomeworkItem['priority'],
+  { bg: string; text: string; dot: string }
+> = {
+  high: {
+    bg: 'bg-[#FDF3F4]',
+    text: 'text-[#C50F1F]',
+    dot: 'bg-[#C50F1F]',
+  },
+  medium: {
+    bg: 'bg-[#FFF9F5]',
+    text: 'text-[#8A3707]',
+    dot: 'bg-[#8A3707]',
+  },
+  low: {
+    bg: 'bg-[#F1FAF1]',
+    text: 'text-[#107C10]',
+    dot: 'bg-[#107C10]',
+  },
 };
 
-const STATUS_ICONS: Record<HomeworkItem['status'], React.ComponentType<{ className?: string }>> = {
+const STATUS_ICONS: Record<
+  HomeworkItem['status'],
+  React.ComponentType<{ className?: string }>
+> = {
   pending: Clock,
   submitted: CheckCircle2,
   graded: FileCheck,
@@ -21,17 +39,17 @@ const STATUS_ICONS: Record<HomeworkItem['status'], React.ComponentType<{ classNa
 };
 
 const STATUS_STYLES: Record<HomeworkItem['status'], string> = {
-  pending: 'text-blue-500',
-  submitted: 'text-amber-500',
-  graded: 'text-emerald-500',
-  overdue: 'text-red-500',
+  pending: 'text-primary',
+  submitted: 'text-[#8A3707]',
+  graded: 'text-[#107C10]',
+  overdue: 'text-[#C50F1F]',
 };
 
 function isDueSoon(dateStr: string): boolean {
   const due = new Date(dateStr);
   const now = new Date();
   const diff = due.getTime() - now.getTime();
-  return diff > 0 && diff < 2 * 24 * 60 * 60 * 1000; // < 2 days
+  return diff > 0 && diff < 2 * 24 * 60 * 60 * 1000;
 }
 
 // ─── Component ───────────────────────────────────────────
@@ -43,21 +61,19 @@ export function HomeworkCards() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.55, duration: 0.4, ease: 'easeOut' as const }}
-      className="rounded-2xl border border-border bg-card overflow-hidden flex flex-col h-full"
+      transition={{ delay: 0.2, duration: 0.35, ease: 'easeOut' as const }}
+      className="rounded-lg border border-border bg-card shadow-sm flex flex-col h-full min-h-0 overflow-hidden"
     >
-      {/* Header — fixed at top */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 flex-shrink-0">
-        <h3 className="text-sm font-semibold">Homework</h3>
-        <span className="text-xs text-muted-foreground">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
+        <h3 className="text-[15px] font-semibold text-foreground">Homework</h3>
+        <span className="inline-flex items-center rounded-md bg-accent px-2 py-0.5 text-[12px] font-semibold text-primary">
           {pendingCount} pending
         </span>
       </div>
 
-      {/* Scrollable list */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 pt-2.5 pb-2 space-y-1.5">
         {HOMEWORK_LIST.map((hw, i) => {
           const StatusIcon = STATUS_ICONS[hw.status];
           const priorityStyle = PRIORITY_STYLES[hw.priority];
@@ -66,54 +82,53 @@ export function HomeworkCards() {
           return (
             <motion.div
               key={hw.id}
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.65 + i * 0.06, duration: 0.3 }}
+              transition={{ delay: 0.25 + i * 0.03, duration: 0.2 }}
               className={cn(
-                'group flex items-start gap-3 rounded-lg border border-border p-3',
+                'group flex items-start gap-2.5 rounded-md border border-border px-2.5 py-2',
                 'hover:bg-muted/50 transition-colors cursor-pointer',
-                hw.status === 'overdue' && 'border-red-200 dark:border-red-900/50 bg-red-50/30 dark:bg-red-950/10',
+                hw.status === 'overdue' && 'border-[#F1B6BC] bg-[#FDF3F4]/50',
               )}
             >
-              {/* Status icon */}
-              <div className={cn('mt-0.5', STATUS_STYLES[hw.status])}>
+              <div className={cn('mt-0.5 shrink-0', STATUS_STYLES[hw.status])}>
                 <StatusIcon className="w-4 h-4" />
               </div>
 
-              {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-sm font-medium truncate">{hw.title}</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[14px] font-semibold truncate text-foreground leading-snug">
+                    {hw.title}
+                  </p>
                   {hw.grade && (
-                    <span className="text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded">
+                    <span className="text-[11px] font-semibold text-[#107C10] bg-[#F1FAF1] px-1.5 py-0.5 rounded shrink-0">
                       {hw.grade}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-1">
                   {hw.subject} — {hw.description}
                 </p>
-                <div className="flex items-center gap-2 mt-1.5">
-                  {/* Priority badge */}
+                <div className="flex items-center gap-2 mt-1">
                   <span
                     className={cn(
-                      'inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded',
+                      'inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded',
                       priorityStyle.bg,
                       priorityStyle.text,
                     )}
                   >
-                    <span className={cn('w-1.5 h-1.5 rounded-full', priorityStyle.dot)} />
+                    <span
+                      className={cn('w-1.5 h-1.5 rounded-full', priorityStyle.dot)}
+                    />
                     {hw.priority}
                   </span>
-
-                  {/* Due date */}
                   <span
                     className={cn(
-                      'text-[10px]',
+                      'text-[11px]',
                       hw.status === 'overdue'
-                        ? 'text-red-500 font-semibold'
+                        ? 'text-[#C50F1F] font-semibold'
                         : dueSoon
-                          ? 'text-amber-500 font-semibold'
+                          ? 'text-[#8A3707] font-semibold'
                           : 'text-muted-foreground',
                     )}
                   >
@@ -128,7 +143,7 @@ export function HomeworkCards() {
                 </div>
               </div>
 
-              <ChevronRight className="w-4 h-4 text-muted-foreground/40 mt-1 group-hover:text-foreground transition-colors flex-shrink-0" />
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/35 mt-0.5 group-hover:text-foreground transition-colors shrink-0" />
             </motion.div>
           );
         })}

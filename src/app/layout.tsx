@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Inter } from 'next/font/google';
+import { Geist_Mono, Source_Sans_3 } from 'next/font/google';
 import { cn } from '@/src/lib/utils';
 import { TooltipProvider } from '@/src/components/ui/tooltip';
 import { ThemeProvider } from '@/src/components/providers/theme-provider';
@@ -9,11 +9,10 @@ import './globals.css';
 
 // ─── Fonts ───────────────────────────────────────────────
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const sourceSans = Source_Sans_3({
   subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -24,7 +23,7 @@ const geistMono = Geist_Mono({
 // ─── Metadata ────────────────────────────────────────────
 
 export const metadata: Metadata = {
-  title: 'DexDain — School Management',
+  title: 'DexDian — School Management',
   description:
     'A modern school and college management platform for students, parents, and educators.',
 };
@@ -43,10 +42,9 @@ export default function RootLayout({
       className={cn(
         'h-full',
         'antialiased',
-        geistSans.variable,
         geistMono.variable,
         'font-sans',
-        inter.variable,
+        sourceSans.variable,
       )}
     >
       <body className="min-h-full bg-background text-foreground">

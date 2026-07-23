@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 
 // ─── Constants ───────────────────────────────────────────
 
-const DUMMY_EMAIL = 'admin@dexdain.com';
-const DUMMY_PASSWORD = 'dexdain123';
+const DUMMY_EMAIL = 'admin@dexdian.com';
+const DUMMY_PASSWORD = 'dexdian123';
 const FAKE_TOKEN = 'dummy-jwt-token-for-development';
 
 // ─── Login Logic (API → Dummy Fallback) ──────────────────

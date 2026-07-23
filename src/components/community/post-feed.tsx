@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { CreatePost } from '@/src/components/community/create-post';
 import { PostCard } from '@/src/components/community/post-card';
@@ -17,6 +18,14 @@ function shuffleArray<T>(arr: T[]): T[] {
   return shuffled;
 }
 
+const feedContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.12 },
+  },
+};
+
 // ─── Component ───────────────────────────────────────────
 
 export function PostFeed() {
@@ -25,13 +34,11 @@ export function PostFeed() {
   const [hasMore, setHasMore] = useState(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Simulate loading more posts
   const loadMore = useCallback(() => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
 
     setTimeout(() => {
-      // Simulate: shuffle and append existing posts as "new" ones
       const morePosts = shuffleArray(COMMUNITY_POSTS).map((p, i) => ({
         ...p,
         id: `more-${Date.now()}-${i}`,
@@ -44,14 +51,12 @@ export function PostFeed() {
       setPosts((prev) => [...prev, ...morePosts]);
       setIsLoading(false);
 
-      // Stop after ~3 loads for demo
       if (posts.length > COMMUNITY_POSTS.length * 3) {
         setHasMore(false);
       }
-    }, 1000);
+    }, 900);
   }, [isLoading, hasMore, posts.length]);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
@@ -70,30 +75,42 @@ export function PostFeed() {
   }, [loadMore, hasMore, isLoading]);
 
   return (
-    <div className="space-y-3">
-      {/* Create Post */}
+    <motion.div
+      variants={feedContainer}
+      initial="hidden"
+      animate="show"
+      className="space-y-4 max-w-[640px] mx-auto lg:mx-0 lg:max-w-none"
+    >
       <CreatePost />
 
-      {/* Posts */}
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      <AnimatePresence mode="popLayout">
+        {posts.map((post, index) => (
+          <PostCard key={post.id} post={post} index={index} />
+        ))}
+      </AnimatePresence>
 
-      {/* Infinite scroll sentinel */}
       <div ref={sentinelRef} className="flex items-center justify-center py-6">
         {isLoading && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Loading posts...
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 text-[14px] text-muted-foreground"
+          >
+            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            Loading posts…
+          </motion.div>
         )}
         {!hasMore && !isLoading && (
-          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center gap-2 text-[14px] text-muted-foreground"
+          >
             <RefreshCw className="w-4 h-4" />
-            <span>You&apos;re all caught up!</span>
-          </div>
+            <span>You&apos;re all caught up</span>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

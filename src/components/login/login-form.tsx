@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, Loader2, LogIn } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
 import { useLogin } from '@/src/hooks/use-login';
 import { cn } from '@/src/lib/utils';
 
@@ -24,7 +24,7 @@ function validate(values: typeof INITIAL_VALUES): FieldErrors {
   if (!values.email.trim()) {
     errors.email = 'Email is required';
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = 'Please enter a valid email';
+    errors.email = 'Please enter a valid email address';
   }
 
   if (!values.password) {
@@ -42,16 +42,16 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.12 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' as const },
+    transition: { duration: 0.45, ease: 'easeOut' as const },
   },
 };
 
@@ -69,11 +69,8 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [shake, setShake] = useState(false);
 
-  // ── Handlers ──────────────────────────────────────
-
   const handleChange = (field: keyof typeof INITIAL_VALUES, value: string) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-    // Clear field error on change
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -97,171 +94,156 @@ export function LoginForm() {
     });
   };
 
-  // ── Render ────────────────────────────────────────
-
   return (
     <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="w-full max-w-md mx-auto"
+      className="w-full max-w-[420px]"
     >
-      {/* --- Glass Card --- */}
       <motion.div
-        animate={shake ? { x: [0, -10, 10, -8, 8, -4, 4, 0] } : {}}
+        animate={shake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
         transition={{ duration: 0.4 }}
-        className={cn(
-          'relative overflow-hidden rounded-2xl border border-white/20',
-          'bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl',
-          'shadow-2xl shadow-black/5 dark:shadow-black/30',
-        )}
       >
-        {/* Shine accent line */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+        {/* Header */}
+        <motion.div variants={itemVariants} className="mb-9">
+          <p className="text-[13px] font-semibold tracking-[0.14em] uppercase text-[#0F6CBD] mb-3">
+            Student Portal
+          </p>
+          <h1
+            className="text-[1.875rem] sm:text-[2.125rem] font-semibold tracking-tight text-[#242424] leading-tight"
+            style={{ fontFamily: 'var(--font-login-serif), Georgia, serif' }}
+          >
+            Sign in
+          </h1>
+          <p className="mt-2.5 text-[15px] sm:text-base leading-relaxed text-[#616161]">
+            Enter your credentials to access DexDian.
+          </p>
+        </motion.div>
 
-        <div className="p-8 sm:p-10">
-          {/* --- Header --- */}
-          <motion.div variants={itemVariants} className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-4">
-              <LogIn className="w-7 h-7 text-primary" />
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <label
+              htmlFor="email"
+              className="block text-[14px] font-semibold text-[#242424]"
+            >
+              Email address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8A8886] pointer-events-none" />
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="name@school.edu"
+                value={values.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                className={cn(
+                  'w-full h-12 pl-11 pr-4 rounded-md text-[15px] text-[#242424]',
+                  'bg-white border border-[#D1D1D1]',
+                  'placeholder:text-[#A19F9D]',
+                  'focus:outline-none focus:border-[#0F6CBD] focus:ring-2 focus:ring-[#0F6CBD]/25',
+                  'transition-all duration-150',
+                  errors.email &&
+                    'border-[#C50F1F] focus:border-[#C50F1F] focus:ring-[#C50F1F]/20',
+                )}
+              />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Welcome to DexDain
-            </h1>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Sign in to your student portal
-            </p>
+            {errors.email && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-[13px] text-[#C50F1F]"
+              >
+                {errors.email}
+              </motion.p>
+            )}
           </motion.div>
 
-          {/* --- Form --- */}
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            {/* Email */}
-            <motion.div variants={itemVariants} className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground"
-              >
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="you@school.edu"
-                  value={values.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  className={cn(
-                    'w-full h-11 pl-10 pr-4 rounded-xl text-sm',
-                    'bg-muted/50 border border-border',
-                    'placeholder:text-muted-foreground/60',
-                    'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
-                    'transition-all duration-200',
-                    errors.email && 'border-destructive focus:ring-destructive/30',
-                  )}
-                />
-              </div>
-              {errors.email && (
-                <motion.p
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xs text-destructive pl-1"
-                >
-                  {errors.email}
-                </motion.p>
-              )}
-            </motion.div>
-
-            {/* Password */}
-            <motion.div variants={itemVariants} className="space-y-1.5">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-foreground"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  value={values.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
-                  className={cn(
-                    'w-full h-11 pl-10 pr-11 rounded-xl text-sm',
-                    'bg-muted/50 border border-border',
-                    'placeholder:text-muted-foreground/60',
-                    'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
-                    'transition-all duration-200',
-                    errors.password && 'border-destructive focus:ring-destructive/30',
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <motion.p
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xs text-destructive pl-1"
-                >
-                  {errors.password}
-                </motion.p>
-              )}
-            </motion.div>
-
-            {/* Submit Button */}
-            <motion.div variants={itemVariants}>
-              <button
-                type="submit"
-                disabled={isPending}
+          <motion.div variants={itemVariants} className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-[14px] font-semibold text-[#242424]"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8A8886] pointer-events-none" />
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={values.password}
+                onChange={(e) => handleChange('password', e.target.value)}
                 className={cn(
-                  'w-full h-11 rounded-xl font-semibold text-sm',
-                  'bg-primary text-primary-foreground',
-                  'hover:opacity-90 active:scale-[0.98]',
-                  'transition-all duration-200',
-                  'focus:outline-none focus:ring-2 focus:ring-primary/50',
-                  'disabled:opacity-60 disabled:cursor-not-allowed',
-                  'flex items-center justify-center gap-2',
+                  'w-full h-12 pl-11 pr-12 rounded-md text-[15px] text-[#242424]',
+                  'bg-white border border-[#D1D1D1]',
+                  'placeholder:text-[#A19F9D]',
+                  'focus:outline-none focus:border-[#0F6CBD] focus:ring-2 focus:ring-[#0F6CBD]/25',
+                  'transition-all duration-150',
+                  errors.password &&
+                    'border-[#C50F1F] focus:border-[#C50F1F] focus:ring-[#C50F1F]/20',
                 )}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8A8886] hover:text-[#242424] transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Signing in...
-                  </>
+                {showPassword ? (
+                  <EyeOff className="w-[18px] h-[18px]" />
                 ) : (
-                  <>
-                    <LogIn className="w-4 h-4" />
-                    Sign In
-                  </>
+                  <Eye className="w-[18px] h-[18px]" />
                 )}
               </button>
-            </motion.div>
-          </form>
-        </div>
-      </motion.div>
+            </div>
+            {errors.password && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-[13px] text-[#C50F1F]"
+              >
+                {errors.password}
+              </motion.p>
+            )}
+          </motion.div>
 
-      {/* --- Footer --- */}
-      <motion.p
-        variants={itemVariants}
-        className="mt-6 text-center text-xs text-muted-foreground"
-      >
-        DexDain School Management Platform
-      </motion.p>
+          <motion.div variants={itemVariants} className="pt-1">
+            <button
+              type="submit"
+              disabled={isPending}
+              className={cn(
+                'w-full h-12 rounded-md font-semibold text-[15px] tracking-wide',
+                'bg-[#0F6CBD] text-white',
+                'hover:bg-[#115EA3] active:bg-[#0F548C]',
+                'transition-colors duration-150',
+                'focus:outline-none focus:ring-2 focus:ring-[#0F6CBD]/40 focus:ring-offset-2',
+                'disabled:opacity-60 disabled:cursor-not-allowed',
+                'flex items-center justify-center gap-2',
+              )}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Signing in…
+                </>
+              ) : (
+                'Sign in'
+              )}
+            </button>
+          </motion.div>
+        </form>
+
+        <motion.p
+          variants={itemVariants}
+          className="mt-10 text-[13px] leading-relaxed text-[#8A8886]"
+        >
+          Protected access for authorised students and staff only.
+        </motion.p>
+      </motion.div>
     </motion.div>
   );
 }
